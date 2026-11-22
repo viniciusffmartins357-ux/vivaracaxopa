@@ -1,0 +1,1 @@
+import{t as e}from"./StoreHeader-SNdYhHWO.js";import{c as t}from"./index-BAtkO90p.js";var n=t(),r=()=>(0,n.jsxs)(`div`,{className:`min-h-screen bg-background`,children:[(0,n.jsx)(e,{}),(0,n.jsx)(`div`,{className:`py-20 text-center text-foreground`,children:`Algo deu errado.`})]});export{r as errorComponent};
