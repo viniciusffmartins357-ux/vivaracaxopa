@@ -276,3 +276,103 @@ body{background:#fffdfa}
  .logo span{font-size:29px}
 }
 @media (max-width:360px){.product-grid{grid-template-columns:1fr}.product-name{min-height:0}}
+
+
+/* Fluxo de compra em etapas: sacola, dados, endereço, frete e upsells */
+.checkout-flow{max-width:1000px;padding-top:22px;min-height:calc(100vh - 52px)}
+.checkout-flow .page-heading{border-bottom:1px solid #e2dfda;margin-bottom:17px;padding:4px 0 15px}
+.checkout-flow .page-heading h1{font:400 23px/1.15 Georgia,"Times New Roman",serif;letter-spacing:.16em;color:#113b29;margin:0 0 5px}
+.checkout-flow .page-heading span{font-size:12px;color:#e68b6e}
+.checkout-flow .checkout-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(265px,.84fr);gap:18px;align-items:start}
+.checkout-flow .checkout-main{gap:14px}
+.checkout-flow .summary{position:sticky;top:28px;padding:18px;background:#fff;border:1px solid #dfded8;border-radius:3px}
+.checkout-flow .summary h3{font:400 15px/1.2 Georgia,serif;letter-spacing:.16em;margin-bottom:16px;color:#103a29}
+.checkout-flow .summary-row{font-size:12px;padding:9px 0}
+.checkout-flow .summary-row span:first-child{color:#e28c6d}
+.checkout-flow .summary-row.total{margin-top:5px;font-size:14px;font-weight:bold}
+.checkout-flow .summary-row.total span:first-child{color:#113929}
+.checkout-flow .summary-divider{margin:11px 0}
+.checkout-flow .summary .btn-green{margin-top:16px;min-height:42px;font-size:10px;letter-spacing:.11em}
+.checkout-flow .safe-note{font-size:11px;line-height:1.4;color:#667870}
+.checkout-flow .cart-list{border:0}
+.checkout-flow .cart-item{margin-top:0;display:grid;grid-template-columns:96px 1fr;gap:13px;padding:14px;background:#fff;border:1px solid #e1ded9;border-radius:3px}
+.checkout-flow .cart-image img{width:92px;height:94px;object-fit:contain}
+.checkout-flow .cart-item-body{min-width:0}
+.checkout-flow .cart-item-title{font:400 14px/1.4 Georgia,serif;color:#12392a}
+.checkout-flow .size-chip{display:inline-block;font-size:11px;color:#da8e73;border:1px solid #eed2c6;padding:5px 9px;border-radius:3px;margin-top:4px}
+.checkout-flow .cart-item-bottom{align-items:end;gap:12px}
+.checkout-flow .item-meta{display:flex;align-items:center;gap:8px}
+.checkout-flow .item-meta .muted{margin:0;color:#e28c6d;font-size:12px}
+.checkout-flow .item-prices{display:flex;gap:9px;align-items:center;justify-content:flex-end;flex-wrap:wrap;font-size:12px}
+.checkout-flow .item-prices del{color:#7b8580;font-size:11px}
+.checkout-flow .item-prices strong{font-size:14px;color:#128444}
+.checkout-flow .qty button{height:27px;width:28px}
+.checkout-flow .qty span{min-width:20px;font-size:12px}
+.checkout-flow .back-link{margin:13px 0;color:#163f2d;font-size:12px}
+.checkout-flow .checkout-products{padding:11px 15px;border-radius:3px}
+.checkout-flow .checkout-product{grid-template-columns:60px minmax(0,1fr) auto;gap:13px}
+.checkout-flow .checkout-product img{width:58px;height:57px}
+.checkout-flow .checkout-product strong{font:400 13px/1.35 Georgia,serif}
+.checkout-flow .checkout-product small{font-size:11px;margin-top:5px}
+.checkout-flow .checkout-product b{font-size:13px}
+.checkout-flow .checkout-status{display:flex;gap:16px;margin:0 0 17px;padding-bottom:6px}
+.checkout-flow .checkout-status span{font-size:11px;color:#89948b;white-space:nowrap}
+.checkout-flow .checkout-status span.current{color:#0e4c31;font-weight:700}
+.checkout-flow .form-card{padding:18px;border:1px solid #e1ded9;border-radius:3px}
+.checkout-flow .form-card h2{font:400 15px/1.4 Georgia,serif;letter-spacing:.13em;color:#12392a;margin:0 0 16px;display:flex;align-items:center;gap:9px}
+.checkout-flow .form-card .step-dot{flex:0 0 21px;width:21px;height:21px;font-size:11px;background:#113a27}
+.checkout-flow .form-card label{font-size:11px;color:#dc866a;gap:5px;margin-bottom:12px}
+.checkout-flow .form-card input,.checkout-flow .form-card select{min-height:40px;border-color:#88bb99;border-radius:2px;color:#17432e;font-size:13px;padding:9px 11px}
+.checkout-flow .form-card input:disabled{background:#f7f7f4;color:#929d95;border-color:#e2e4df}
+.checkout-flow .form-card input:focus,.checkout-flow .form-card select:focus{border-color:#138846;outline:1px solid #138846}
+.checkout-flow .form-card .form-notice{font-size:11px;line-height:1.4;color:#64766b;background:#f7f8f5;padding:8px 10px;border-left:2px solid #87aa8b;margin-bottom:16px}
+.checkout-flow .field-help{display:block;margin:-6px 0 14px;color:#728279;font-size:11px}
+.checkout-flow .form-card .btn-green{font-size:11px;min-height:41px;letter-spacing:.16em}
+.checkout-flow .form-card .input-row{grid-template-columns:1fr 1fr;gap:12px}
+.checkout-flow .form-card .postcode-row{grid-template-columns:minmax(0,1.8fr) minmax(90px,.6fr)}
+.checkout-flow .completed-stage h2{margin-bottom:8px}
+.checkout-flow .completed-stage p{color:#6a796e;font-size:12px;line-height:1.5;margin:0}
+.checkout-flow .edit-step{font:normal 11px Arial,sans-serif;color:#346a50;text-decoration:underline;margin-left:auto;border:0;background:transparent;padding:6px}
+.checkout-flow .upsell{border-top:1px solid #e6e2dd;margin-top:13px;padding-top:12px}
+.checkout-flow .upsell h3{font:400 13px Georgia,serif;letter-spacing:.14em;margin:0 0 6px}
+.checkout-flow .upsell>p{font-size:11px;margin:0 0 9px;color:#708075}
+.checkout-flow .upsell-inline{border:1px dashed #e3ddd5;padding:10px;margin-top:8px;background:#fff;display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:center}
+.checkout-flow .upsell-inline .upsell-image img{width:50px;height:50px;object-fit:contain}
+.checkout-flow .upsell-inline .upsell-body{min-width:0}
+.checkout-flow .upsell-label{display:flex;align-items:flex-start;gap:7px;cursor:pointer}
+.checkout-flow .upsell-label input{width:14px;height:14px;flex:0 0 14px;margin:2px 0;accent-color:#0e4d31}
+.checkout-flow .upsell-label span{min-width:0}
+.checkout-flow .upsell-label strong{font:500 12px/1.35 Arial,sans-serif;color:#173e2c}
+.checkout-flow .upsell-label em{display:block;color:#117e42;font-size:11px;font-style:normal;margin:4px 0}
+.checkout-flow .upsell-inline .upsell-controls{margin-top:6px}
+.checkout-flow .upsell-inline .size-select{min-height:31px;font-size:11px;padding:5px 6px}
+.checkout-flow .form-card .delivery-preview{background:#fff;border:1px solid #dfddd7;padding:12px;margin:14px 0}
+.checkout-flow .form-card .delivery-preview legend{font-size:12px;color:#163a2b}
+.checkout-flow .form-card label.freight-choice{color:#244335;font-size:12px;margin:8px 0;padding:11px}
+.checkout-flow .freight-choice b{font-size:11px}
+.checkout-flow .freight-disclaimer{color:#758179;font-size:11px}
+.checkout-flow .payment-info{margin-bottom:12px}
+@media(max-width:900px){
+ .checkout-flow .checkout-layout{grid-template-columns:minmax(0,1fr)}
+ .checkout-flow .summary{position:static}
+}
+@media(max-width:600px){
+ .checkout-flow{padding:16px 12px 50px;min-height:70vh}
+ .checkout-flow .page-heading h1{font-size:21px}
+ .checkout-flow .checkout-status{gap:6px;flex-wrap:wrap;justify-content:space-between}
+ .checkout-flow .checkout-status span{font-size:10px}
+ .checkout-flow .cart-item{grid-template-columns:79px minmax(0,1fr);padding:10px;gap:8px}
+ .checkout-flow .cart-image img{width:77px;height:80px}
+ .checkout-flow .cart-item-title{font-size:12px}
+ .checkout-flow .cart-item-bottom{align-items:flex-end}
+ .checkout-flow .item-prices{flex-direction:column;align-items:flex-end;gap:2px}
+ .checkout-flow .item-meta{gap:4px}
+ .checkout-flow .qty button{width:24px}
+ .checkout-flow .form-card .input-row{grid-template-columns:1fr}
+ .checkout-flow .form-card .postcode-row{grid-template-columns:1fr 100px}
+ .checkout-flow .form-card{padding:14px}
+ .checkout-flow .checkout-product{grid-template-columns:47px minmax(0,1fr) auto;gap:8px}
+ .checkout-flow .checkout-product img{width:46px;height:46px}
+ .checkout-flow .checkout-product strong{font-size:12px}
+ .checkout-flow .checkout-product b{font-size:11px}
+}
