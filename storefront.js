@@ -235,7 +235,7 @@
   }
   function checkoutPage() {
     if(!cart.length)return cartPage();
-    return header()+'<main class="page-container short-page checkout-flow"><div class="page-heading"><h1>CHECKOUT</h1><span>'+quantity()+' itens na sacola</span></div>'+
+    return header()+'<main class="page-container short-page checkout-flow checkout-from-zip"><div class="page-heading"><h1>CHECKOUT</h1><span>'+quantity()+' itens na sacola</span></div>'+
       '<div class="checkout-layout"><div class="checkout-main">'+
       '<div class="checkout-products">'+cart.map(i=>'<article class="checkout-product">'+image(byId[i.id])+
         '<div><strong>'+byId[i.id].name+'</strong><small>Tamanho: '+i.size+' · Qtd: '+i.qty+'</small></div><b>'+money(i.qty*PRICE)+'</b></article>').join("")+'</div>'+
