@@ -303,6 +303,10 @@
     let content=path==="/rastreio"?trackingPage():path==="/carrinho"?cartPage():path==="/checkout"?checkoutPage():p?productPage(p):catalogue();
     root.innerHTML=content+'<div role="status" class="toast" aria-live="polite"></div>';
     document.title=(path==="/rastreio"?"Acompanhar pedido":path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Life Anéis";
+    if(activePayment && path==="/checkout"){
+      const text=document.getElementById("pix-copy-value");
+      if(text)text.value=activePayment.qrCode;
+    }
   }
   document.addEventListener("click",ev=>{
     const menuBtn=ev.target.closest("#menu-toggle");
@@ -358,6 +362,7 @@
       }
       if(addItem(id,selected.value)){
         selectedUpsells.set(id,Number(selected.value));
+        if(checkoutStage>=3){checkoutStage=2;details.shippingMethod=null;}
         render();
         toast("Oferta adicionada. O total foi atualizado.");
       } else input.checked=false;
@@ -373,6 +378,7 @@
       }
     }
     selectedUpsells.delete(id);
+    if(checkoutStage>=3){checkoutStage=2;details.shippingMethod=null;}
     render();
     toast("Oferta removida. O total foi atualizado.");
   });
@@ -389,8 +395,10 @@
     }
     result.textContent="Consultando o acompanhamento…";
     try {
-      const response=await fetch("/api/rastreio?token="+encodeURIComponent(token),{
-        method:"GET",cache:"no-store",headers:{"Accept":"application/json"},credentials:"same-origin"
+      const response=await fetch("/api/rastreio",{
+        method:"POST",cache:"no-store",
+        headers:{"Content-Type":"application/json","Accept":"application/json"},
+        body:JSON.stringify({token}),credentials:"same-origin"
       });
       const data=await response.json();
       if(!response.ok || !data || data.ok!==true){
@@ -425,14 +433,86 @@
     if(form.id==="customer-form"){
       const ph=String(form.elements.phone?.value||"").replace(/\D/g,"");
       if(ph.length<10||ph.length>11){toast("Digite um telefone válido com DDD.");return;}
-      details={customerCompleted:true};
+      details.customer={
+        name:form.elements.fullName.value.trim(),
+        document:form.elements.cpf.value.replace(/\D/g,""),
+        phone:ph,email:form.elements.email.value.trim()
+      };
       checkoutStage=2;
     }else{
+      const shippingMethod=form.querySelector('input[name="freight"]:checked')?.value;
+      if(!shippingMethod){toast("Selecione o frete antes de continuar.");return;}
+      details.address={
+        zipcode:form.elements.zip.value,number:form.elements.number.value,
+        street:form.elements.street.value.trim(),neighborhood:form.elements.district.value.trim(),
+        city:form.elements.city.value.trim(),state:form.elements.state.value
+      };
+      details.shippingMethod=shippingMethod;
       checkoutStage=3;
     }
     render();
     document.querySelector(checkoutStage===2?"#address-form":".payment-stage")?.scrollIntoView({block:"start",behavior:"smooth"});
   });
+  async function pollPayment() {
+    if(!activePayment || route()!=="/checkout" || checkoutStage!==3)return;
+    if(activePayment.status==="approved" || ["failed","refunded","chargeback"].includes(activePayment.status))return;
+    try{
+      const response=await fetch("/api/order-status",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({reference:activePayment.reference,accessToken:activePayment.accessToken}),
+        cache:"no-store"
+      });
+      if(!response.ok)return;
+      const result=await response.json();
+      if(!result.ok)return;
+      activePayment.status=result.status;
+      const statusEl=document.getElementById("pix-status");
+      if(statusEl)statusEl.textContent=result.status==="approved"?"Pagamento confirmado!":"Aguardando confirmação da PinguPag…";
+      if(["approved","failed","refunded","chargeback"].includes(result.status)){
+        if(paymentCheckTimer){clearInterval(paymentCheckTimer);paymentCheckTimer=null;}
+        render();
+      }
+    }catch{}
+  }
+  document.addEventListener("click",async ev=>{
+    if(ev.target.closest("#pix-copy-button")){
+      if(!activePayment?.qrCode)return;
+      try{await navigator.clipboard.writeText(activePayment.qrCode);toast("Pix Copia e Cola copiado.");}
+      catch{toast("Selecione o código Pix para copiar.");}
+      return;
+    }
+    const btn=ev.target.closest("#pix-generate-button");
+    if(!btn)return;
+    if(!checkoutConfig.enabled||!details.customer||!details.address||!details.shippingMethod){
+      toast("Revise os dados e o frete.");return;
+    }
+    btn.disabled=true;btn.textContent="GERANDO COBRANÇA...";
+    const errorBox=document.getElementById("pix-error");
+    if(errorBox)errorBox.textContent="";
+    try {
+      const response=await fetch("/api/create-pix",{
+        method:"POST",headers:{"Content-Type":"application/json"},cache:"no-store",
+        body:JSON.stringify({items:cart,customer:details.customer,address:details.address,shippingMethod:details.shippingMethod})
+      });
+      const result=await response.json();
+      if(!response.ok || !result.ok)throw new Error(result.message||"Não foi possível emitir o Pix.");
+      activePayment={...result,status:"pending"};
+      // Não mantenha CPF, endereço ou telefone no armazenamento do navegador.
+      details={};render();
+      const text=document.getElementById("pix-copy-value");
+      if(text)text.value=activePayment.qrCode;
+      if(paymentCheckTimer)clearInterval(paymentCheckTimer);
+      paymentCheckTimer=setInterval(pollPayment,8000);
+    }catch(err) {
+      if(errorBox)errorBox.textContent=String(err.message||"Falha ao emitir Pix");
+      btn.disabled=false;btn.textContent="GERAR QR CODE PIX";
+    }
+  });
+  fetch("/api/checkout-config",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(config=>{
+    if(!config)return;
+    checkoutConfig=config;
+    if(route()==="/checkout" && checkoutStage===1)render();
+  }).catch(()=>{});
   window.addEventListener("popstate",render);
   render();
 })();
