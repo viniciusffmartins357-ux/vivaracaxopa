@@ -261,10 +261,8 @@
       const parent=add.closest(".product-card,.detail-info,.upsell-card");
       const selected=parent && parent.querySelector("select[data-size-for]");
       if(addItem(add.dataset.add,selected && selected.value)){
-        const onCatalog=route()==="/";
-        render();
+        navigate("/carrinho");
         toast("Anel adicionado à sacola.");
-        if(!onCatalog && route().startsWith("/produto/"))navigate("/carrinho");
       }
       return;
     }
