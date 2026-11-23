@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500&family=Italianno&family=Montserrat:wght@400;500;600;700&display=swap");
 :root{
   color-scheme:light;
   --ivory:#faf9f6;
@@ -478,25 +479,37 @@ body{font-family:var(--font-ui);font-weight:400;letter-spacing:-.012em}
 }
 
 
-/* Logo ilustrada enviada para o topo do catálogo */
-.catalog-heading.catalog-logo-heading{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:0;
-  margin:0 auto 22px;
-  max-width:100%;
+/* Apenas tipografia (sem arte/imagem) como na referência */
+.catalog-heading{
+  text-align:center;
+  margin:0 auto 28px;
+  padding:10px 0 0;
 }
-.catalog-brand-image{
-  display:block;
-  width:min(450px,100%);
-  height:auto;
-  max-height:246px;
-  object-fit:contain;
-  margin:0 auto;
+.catalog-heading h1{
+  font-family:"Bodoni Moda", "Times New Roman", Georgia,serif;
+  font-size:clamp(31px,3.4vw,44px);
+  font-weight:400;
+  line-height:1.18;
+  letter-spacing:.012em;
+  color:#073929;
+  margin:0 0 7px;
+}
+.catalog-heading p{
+  font-family:"Montserrat",Arial,sans-serif;
+  color:#e68c72;
+  font-size:12px;
+  letter-spacing:0;
+  margin:0;
+}
+.logo span{
+  font-family:"Italianno","Brush Script MT",cursive;
+  font-style:normal;
+  font-weight:400;
+  font-size:40px;
+  line-height:.9;
 }
 @media(max-width:700px){
-  .catalog-heading.catalog-logo-heading{margin-bottom:16px}
-  .catalog-brand-image{width:min(400px,100%);max-height:none}
+  .catalog-heading{padding-top:8px;margin-bottom:23px}
+  .catalog-heading h1{font-size:clamp(29px,8vw,38px)}
+  .logo span{font-size:35px}
 }
