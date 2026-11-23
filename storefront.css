@@ -476,3 +476,27 @@ body{font-family:var(--font-ui);font-weight:400;letter-spacing:-.012em}
  .tracking-form-row{flex-direction:column}
  .tracking-form-row button{width:100%}
 }
+
+
+/* Logo ilustrada enviada para o topo do catálogo */
+.catalog-heading.catalog-logo-heading{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  margin:0 auto 22px;
+  max-width:100%;
+}
+.catalog-brand-image{
+  display:block;
+  width:min(450px,100%);
+  height:auto;
+  max-height:246px;
+  object-fit:contain;
+  margin:0 auto;
+}
+@media(max-width:700px){
+  .catalog-heading.catalog-logo-heading{margin-bottom:16px}
+  .catalog-brand-image{width:min(400px,100%);max-height:none}
+}
