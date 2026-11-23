@@ -265,8 +265,8 @@
         '<label for="pix-copy-value">Pix Copia e Cola</label><textarea id="pix-copy-value" rows="3" readonly></textarea>'+
         '<button type="button" id="pix-copy-button" class="btn btn-green">COPIAR CÓDIGO PIX</button>'+
         '<p id="pix-status" role="status">Aguardando confirmação do pagamento…</p>')+
-        '<p class="tracking-prompt">Código de acompanhamento (guarde para consultar seu pedido):</p>'+
-        '<code class="tracking-secret">'+escapeHtml(activePayment.accessToken)+'</code>'+
+        '<p class="tracking-prompt">Código do pedido (gerado junto com o Pix; guarde para consultar o pagamento):</p>'+
+        '<code class="tracking-secret">'+escapeHtml(activePayment.accessToken)+'</code>'+ '<button type="button" class="text-button" id="order-code-copy-button">COPIAR CÓDIGO DO PEDIDO</button>'+ 
         '</div>';
     }else if(checkoutConfig.enabled){
       content='<div class="payment-info"><strong>Pagamento via Pix</strong>'+
@@ -294,20 +294,20 @@
   function trackingPage() {
     return '<header class="tracking-topbar"><a href="/" data-route="/">← Voltar à loja</a><strong>ACOMPANHAMENTO DO PEDIDO</strong><span></span></header>'+
       '<main class="tracking-container">'+
-      '<div class="tracking-heading"><span class="eyebrow">INFORMAÇÕES DO PEDIDO</span><h1>Acompanhe sua entrega</h1>'+
-      '<p>O pagamento confirmado e a postagem são etapas diferentes. O código de rastreio só fica disponível quando uma transportadora atribui um código real ao envio.</p></div>'+
+      '<div class="tracking-heading"><span class="eyebrow">INFORMAÇÕES DO PEDIDO</span><h1>Consulte seu pedido</h1>'+
+      '<p>O código gerado junto com o Pix permite consultar o pagamento na PinguPag. Ele não é um código de rastreio da transportadora.</p></div>'+
       '<section class="tracking-progress" aria-label="Etapas do pedido">'+
-      '<div><span class="tracking-number">1</span><strong>Pagamento confirmado</strong><p>Confirmado pelo provedor de pagamentos, nunca apenas pelo navegador.</p></div>'+
-      '<div><span class="tracking-number">2</span><strong>Pedido preparado</strong><p>O vendedor separa os produtos e providencia a postagem.</p></div>'+
-      '<div><span class="tracking-number">3</span><strong>Rastreamento disponível</strong><p>O código verdadeiro da transportadora é liberado quando existir.</p></div></section>'+
+      '<div><span class="tracking-number">1</span><strong>Pix gerado</strong><p>Um código único identifica o pedido e permite consultar o pagamento.</p></div>'+
+      '<div><span class="tracking-number">2</span><strong>Pagamento confirmado</strong><p>A confirmação é consultada diretamente na PinguPag.</p></div>'+
+      '<div><span class="tracking-number">3</span><strong>Entrega</strong><p>O rastreio da transportadora só existe depois da postagem e precisa ser informado pela loja.</p></div></section>'+
       '<section class="tracking-lookup"><h2>Consultar acompanhamento</h2>'+
-      '<p>Para consultar um pedido, utilize a referência privada fornecida pela loja. Não informe CPF, telefone ou dados bancários.</p>'+
-      '<form id="tracking-form" autocomplete="off"><label for="tracking-token">Referência privada do pedido</label>'+
-      '<div class="tracking-form-row"><input id="tracking-token" name="token" type="text" maxlength="128" minlength="12" required autocapitalize="off" spellcheck="false" placeholder="Sua referência de acompanhamento"/>'+
+      '<p>Digite o código do pedido exibido ao gerar o Pix. Não informe CPF, telefone ou dados bancários.</p>'+
+      '<form id="tracking-form" autocomplete="off"><label for="tracking-token">Código do pedido</label>'+
+      '<div class="tracking-form-row"><input id="tracking-token" name="token" type="text" maxlength="128" minlength="12" required autocapitalize="off" spellcheck="false" placeholder="LA-XXXXXXXXXXXXXXXXXXXXXXXX"/>'+
       '<button class="btn btn-green" type="submit">CONSULTAR</button></div></form>'+
-      '<div id="tracking-result" class="tracking-result" role="status" aria-live="polite">A consulta será ativada quando o sistema de pedidos e o serviço de envio estiverem integrados. Nenhum código fictício será gerado.</div>'+
+      '<div id="tracking-result" class="tracking-result" role="status" aria-live="polite">Insira o código do pedido para verificar o status do Pix.</div>'+
       '</section>'+
-      '<p class="tracking-disclaimer">Esta página não confirma pagamentos por conta própria e não representa um serviço oficial de transportadora.</p>'+
+      '<p class="tracking-disclaimer">A página consulta o status do pagamento na PinguPag. Não informa deslocamento ou entrega de encomendas.</p>'+
       '</main>'+footer();
   }
   function render() {
@@ -415,17 +415,17 @@
       });
       const data=await response.json();
       if(!response.ok || !data || data.ok!==true){
-        result.textContent="A consulta de pedidos ainda não está conectada ao sistema de pagamentos e entregas.";
+        result.textContent="Não foi possível consultar este código agora. Verifique o código e tente novamente.";
         return;
       }
       if(data.paymentStatus!=="approved"){
-        result.textContent="O pagamento ainda não foi confirmado pelo provedor.";
+        result.textContent="O pagamento ainda não está aprovado na PinguPag.";
         return;
       }
       if(data.shippingStatus==="shipped" && typeof data.trackingCode==="string" && data.trackingCode){
         result.textContent="Pagamento confirmado. Código de rastreio: "+data.trackingCode;
       }else{
-        result.textContent="Pagamento confirmado. Pedido em preparação: o código de rastreio será exibido após a postagem real.";
+        result.textContent="Pagamento confirmado pela PinguPag. O código de transporte deverá ser informado pela loja após a postagem.";
       }
     }catch{
       result.textContent="Não foi possível consultar o acompanhamento no momento.";
@@ -488,6 +488,12 @@
     }catch{}
   }
   document.addEventListener("click",async ev=>{
+    if(ev.target.closest("#order-code-copy-button")){
+      if(!activePayment?.accessToken)return;
+      try{await navigator.clipboard.writeText(activePayment.accessToken);toast("Código do pedido copiado.");}
+      catch{toast("Selecione o código do pedido para copiar.");}
+      return;
+    }
     if(ev.target.closest("#pix-copy-button")){
       if(!activePayment?.qrCode)return;
       try{await navigator.clipboard.writeText(activePayment.qrCode);toast("Pix Copia e Cola copiado.");}
