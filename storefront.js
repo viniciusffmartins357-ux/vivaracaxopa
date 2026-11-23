@@ -167,7 +167,7 @@
       '<div class="summary-divider"></div>'+
       '<div class="summary-row total"><span>Total dos produtos</span><strong>'+money(value)+'</strong></div>'+
       (!inCheckout?'<a data-route="/checkout" href="/checkout" class="btn btn-green">PROSSEGUIR PARA O PAGAMENTO</a>':'')+
-      '<div class="safe-note">'+(inCheckout?'Demonstração: nenhum pagamento é processado.':'Frete e pagamento serão confirmados nas próximas etapas.')+'</div></aside>';
+      '<div class="safe-note">'+(inCheckout?'Pix indisponível no momento.':'Frete e pagamento serão confirmados nas próximas etapas.')+'</div></aside>';
   }
   function cartPage() {
     return header()+'<main class="page-container short-page checkout-flow"><div class="page-heading"><h1>MINHA SACOLA</h1>'+
@@ -187,23 +187,23 @@
       '<p>'+description+'</p></section>';
   }
   function customerStage() {
-    if(checkoutStage>1)return completedCard(1,"DADOS DO CLIENTE","Dados preenchidos nesta demonstração. Você pode editar antes de continuar.");
+    if(checkoutStage>1)return completedCard(1,"DADOS DO CLIENTE","Dados preenchidos nesta prévia, sem envio ao vendedor.");
     return '<form id="customer-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">1</span> DADOS DO CLIENTE</h2>'+
-      '<p class="form-notice">Simulação de checkout: não envie dados reais. Nenhuma informação é transmitida ao vendedor.</p>'+
+      '<p class="form-notice">Pagamento Pix ainda não habilitado. Não informe dados pessoais reais neste formulário.</p>'+
       '<label>Nome completo<input name="fullName" type="text" autocomplete="off" required minlength="3" maxlength="100" placeholder="Nome e sobrenome"/></label>'+
-      '<label>CPF (simulação)<input name="cpf" type="text" inputmode="numeric" autocomplete="off" required minlength="14" maxlength="14" pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
-      '<small id="cpf-info" class="field-help">Use apenas dados fictícios. O CPF digitado não será transmitido nem armazenado.</small>'+
+      '<label>CPF (para teste)<input name="cpf" type="text" inputmode="numeric" autocomplete="off" required minlength="14" maxlength="14" pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
+      '<small id="cpf-info" class="field-help">O CPF preenchido não é enviado nem armazenado.</small>'+
       '<label>Telefone com DDD<input name="phone" type="tel" autocomplete="off" inputmode="tel" required minlength="10" maxlength="20" placeholder="(00) 00000-0000"/></label>'+
       '<label>E-mail<input name="email" type="email" autocomplete="off" required maxlength="120" placeholder="seu@email.com"/></label>'+
       '<button class="btn btn-green" type="submit">CONTINUAR</button></form>';
   }
   function addressStage() {
     if(checkoutStage<2)return "";
-    if(checkoutStage>2)return completedCard(2,"ENDEREÇO E FRETE","Endereço de demonstração informado. Prazo e valor do frete ainda precisam de cotação.");
+    if(checkoutStage>2)return completedCard(2,"ENDEREÇO E FRETE","Endereço preenchido nesta prévia. Frete sujeito a cotação.");
     return '<form id="address-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">2</span> ENDEREÇO E FRETE</h2>'+
-      '<p class="form-notice">Simulação visual do frete. Os valores e prazos abaixo não são cotações reais.</p>'+
+      '<p class="form-notice">Frete sujeito à confirmação de prazo e valor antes de qualquer pagamento.</p>'+
       '<div class="input-row postcode-row"><label>CEP<input name="zip" required inputmode="numeric" pattern="[0-9]{5}-?[0-9]{3}" placeholder="00000-000"/></label>'+
       '<label>Número<input name="number" required maxlength="12" placeholder="Nº"/></label></div>'+
       '<label>Rua<input name="street" required maxlength="150" placeholder="Endereço"/></label>'+
@@ -215,16 +215,15 @@
       (subtotal()>=299?'<label class="freight-choice"><input type="radio" name="freight" value="free" required checked><span><strong>Frete grátis</strong><small>Faixa promocional; prazo a confirmar.</small></span><b>Grátis</b></label>':'')+
       '<label class="freight-choice"><input type="radio" name="freight" value="standard" required><span><strong>Entrega padrão</strong><small>Valor e prazo a consultar.</small></span><b>A calcular</b></label>'+
       '<label class="freight-choice"><input type="radio" name="freight" value="express" required><span><strong>Entrega expressa</strong><small>Disponibilidade, preço e prazo a consultar.</small></span><b>A calcular</b></label>'+
-      '<p class="freight-disclaimer">Nenhuma transportadora foi consultada. O frete não será cobrado neste protótipo.</p></fieldset>'+
+      '<p class="freight-disclaimer">Frete ainda não conectado à transportadora. Valores e prazos pendentes.</p></fieldset>'+
       '<button type="submit" class="btn btn-green">CONTINUAR</button>'+
       '<button type="button" class="text-button" data-prev>Voltar aos dados</button></form>';
   }
   function paymentStage() {
     if(checkoutStage<3)return "";
     return '<section class="form-card payment-stage"><h2><span class="step-dot">3</span> PAGAMENTO</h2>'+
-      '<div class="payment-info"><strong>Checkout demonstrativo</strong>'+
-      '<p>As etapas anteriores foram concluídas apenas na prévia. Nenhum pedido é registrado e nenhum pagamento pode ser efetuado aqui.</p>'+
-      '<p>Para ativar compras reais é necessária uma integração com provedor de pagamentos e cotação real de frete.</p></div>'+
+      '<div class="payment-info"><strong>Pagamento Pix ainda indisponível</strong>'+
+      '<p>A integração com a PinguPag e a confirmação dos pedidos ainda precisam ser ativadas. Não é possível pagar neste checkout.</p></div>'+
       '<button type="button" class="btn btn-green" disabled>AGUARDANDO PAGAMENTO SEGURO</button>'+
       '<p class="tracking-prompt">Depois de uma confirmação de pagamento real, o pedido poderá ser acompanhado. O código da transportadora aparecerá somente após a postagem.</p>'+
       '<a href="/rastreio" data-route="/rastreio" class="tracking-link">Conhecer a tela de acompanhamento</a>'+
