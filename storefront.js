@@ -66,7 +66,7 @@
   function header() {
     if(route()==="/checkout"){
       return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">FINALIZAR PEDIDO</a>'+
-        '<span class="checkout-brand-signature">Loja independente</span></header>';
+        '<span class="checkout-brand-signature">Life Anéis</span></header>';
     }
     if(route()==="/carrinho"){
       return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">VIVARA</a>'+
