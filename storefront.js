@@ -3,7 +3,7 @@
 
   const PRICE = 37.86;
   const STORAGE = "aneis-life-cart-v3";
-  const sizes = [14, 16, 18, 20, 22];
+  const sizes = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
   const products = [
     {id:"enigma-infinito-duplo",name:"Anel Life Enigma Infinito Duplo em Prata 925",old:610,img:"/ring-1-Cz3ws0ux-white-v2.svg"},
     {id:"forms-coracao",name:"Anel Life Forms Coração em Prata 925 com Pedras Incolores",old:550,img:"/ring-2-B16VW5nY-white-v2.svg"},
