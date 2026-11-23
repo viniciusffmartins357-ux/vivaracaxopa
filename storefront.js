@@ -117,46 +117,46 @@
     const p=byId[item.id],key=p.id+"|"+item.size;
     return '<article class="cart-item"><a href="/produto/'+p.id+'" data-route="/produto/'+p.id+'" class="cart-image">'+image(p)+'</a>'+
       '<div class="cart-item-body"><div class="cart-item-top"><div><a class="cart-item-title" href="/produto/'+p.id+'" data-route="/produto/'+p.id+'">'+p.name+'</a>'+
-      '<p class="muted">Tamanho: '+item.size+'</p></div>'+
-      '<button aria-label="Remover '+p.name+'" class="remove" data-remove="'+key+'">×</button></div>'+
-      '<div class="cart-item-bottom"><div class="qty"><button aria-label="Diminuir quantidade" data-change-qty="'+key+'" data-delta="-1">−</button>'+
-      '<span>'+item.qty+'</span><button aria-label="Aumentar quantidade" data-change-qty="'+key+'" data-delta="1">+</button></div>'+
-      '<strong>'+money(PRICE*item.qty)+'</strong></div></div></article>';
+      '<p class="muted"><span class="size-chip">Tamanho: '+item.size+'</span></p></div>'+
+      '<button type="button" aria-label="Remover '+p.name+'" class="remove" data-remove="'+key+'">×</button></div>'+
+      '<div class="cart-item-bottom"><div class="item-meta"><span class="muted">Qtd:</span><div class="qty"><button type="button" aria-label="Diminuir quantidade" data-change-qty="'+key+'" data-delta="-1">−</button>'+
+      '<span>'+item.qty+'</span><button type="button" aria-label="Aumentar quantidade" data-change-qty="'+key+'" data-delta="1">+</button></div></div>'+
+      '<div class="item-prices"><del>'+money(p.old*item.qty)+'</del><strong>'+money(PRICE*item.qty)+'</strong></div></div></div></article>';
   }
   function recommends() {
     const inCart=new Set(cart.map(i=>i.id));
     return products.filter(p=>!inCart.has(p.id)).slice(0,2);
   }
   function upsellCard(p) {
-    return '<div class="upsell-card"><div class="upsell-image">'+image(p)+'</div><div class="upsell-body"><span class="mini-eyebrow">COMPLETE SUA COLEÇÃO</span>'+
-      '<strong>'+p.name+'</strong><p>'+money(PRICE)+'</p>'+
-      '<div class="upsell-controls">'+selectSize(p,"upsell")+
-      '<button type="button" class="btn btn-outline" data-add="'+p.id+'">ADICIONAR</button></div></div></div>';
+    return '<div class="upsell-card upsell-inline"><div class="upsell-image">'+image(p)+'</div>'+
+      '<div class="upsell-body"><label class="upsell-label"><input type="checkbox" data-upsell-check="'+p.id+'" aria-label="Adicionar '+p.name+'"/>'+
+      '<span><strong>Adicionar '+p.name+'</strong><em>Por '+money(PRICE)+' neste pedido</em></span></label>'+
+      '<div class="upsell-controls">'+selectSize(p,"upsell")+'</div></div></div>';
   }
   function upsellSection() {
     const picks=recommends();
-    if(!picks.length)return '';
-    return '<div class="upsell"><h3>Combine com mais um anel</h3><p>Adicione um modelo da coleção ao mesmo pedido.</p>'+
+    if(!picks.length)return "";
+    return '<div class="upsell"><h3>COMPLETE SEU PEDIDO</h3>'+
+      '<p>Ofertas opcionais de outros anéis da coleção, por '+money(PRICE)+' cada.</p>'+
       picks.map(upsellCard).join("")+'</div>';
   }
   function summary(inCheckout=false) {
     const value=subtotal(), missing=Math.max(0,Math.round((299-value)*100)/100);
     return '<aside class="summary"><h3>RESUMO DO PEDIDO</h3>'+
       '<div class="summary-row"><span>Subtotal ('+quantity()+' '+(quantity()===1?'item':'itens')+')</span><strong>'+money(value)+'</strong></div>'+
-      '<div class="summary-row"><span>Frete</span><span>'+(value>=299?'Grátis':'A calcular')+'</span></div>'+
+      '<div class="summary-row"><span>Frete</span><span>'+(value>=299?'Grátis — sujeito à confirmação':inCheckout?'Selecione o frete':'Calculado no checkout')+'</span></div>'+
+      (inCheckout?upsellSection():'')+
       '<div class="summary-divider"></div>'+
       '<div class="summary-row total"><span>Total dos produtos</span><strong>'+money(value)+'</strong></div>'+
-      (missing>0?'<p class="shipping-hint">Faltam '+money(missing)+' em produtos para atingir o frete grátis.</p>':'<p class="shipping-hint success">Seu pedido atingiu a faixa de frete grátis.</p>')+
-      (!inCheckout?'<a data-route="/checkout" href="/checkout" class="btn btn-green">PROSSEGUIR PARA O CHECKOUT</a>':upsellSection())+
-      '<div class="safe-note">O valor final da entrega será confirmado no checkout.</div></aside>';
+      (!inCheckout?'<a data-route="/checkout" href="/checkout" class="btn btn-green">PROSSEGUIR PARA O PAGAMENTO</a>':'')+
+      '<div class="safe-note">'+(inCheckout?'Demonstração: nenhum pagamento é processado.':'Frete e pagamento serão confirmados nas próximas etapas.')+'</div></aside>';
   }
   function cartPage() {
-    return header()+'<main class="page-container short-page"><div class="page-heading"><h1>MINHA SACOLA</h1>'+
+    return header()+'<main class="page-container short-page checkout-flow"><div class="page-heading"><h1>MINHA SACOLA</h1>'+
       '<span>'+quantity()+' '+(quantity()===1?'item':'itens')+'</span></div>'+
       (!cart.length?'<section class="empty-cart"><h2>Sua sacola está vazia.</h2><p>Escolha um anel para começar.</p><a data-route="/" href="/" class="btn btn-coral">VER ANÉIS</a></section>':
       '<div class="checkout-layout"><section><div class="cart-list">'+cart.map(cartLine).join("")+'</div>'+
-      '<a data-route="/" href="/" class="back-link">Continuar comprando</a>'+
-      '<div class="cart-extra">'+upsellSection()+'</div></section>'+summary()+'</div>')+'</main>'+footer();
+      '<a data-route="/" href="/" class="back-link">Continuar comprando</a></section>'+summary()+'</div>')+'</main>'+footer();
   }
   function steps() {
     return '<div class="steps"><span class="'+(checkoutStage===1?'current':'')+'">1. Dados</span>'+
