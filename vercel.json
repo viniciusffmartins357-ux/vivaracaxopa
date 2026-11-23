@@ -11,6 +11,10 @@
     {
       "source": "/produto/:id",
       "destination": "/index.html"
+    },
+    {
+      "source": "/rastreio",
+      "destination": "/index.html"
     }
   ],
   "headers": [
@@ -83,6 +87,24 @@
     },
     {
       "source": "/storefront.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/rastreio",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/api/rastreio",
       "headers": [
         {
           "key": "Cache-Control",
