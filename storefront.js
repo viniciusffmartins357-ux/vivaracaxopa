@@ -179,7 +179,7 @@
     return '<aside class="summary"><h3>RESUMO DO PEDIDO</h3>'+
       '<div class="summary-row"><span>Subtotal ('+quantity()+' '+(quantity()===1?'item':'itens')+')</span><strong>'+money(value)+'</strong></div>'+
       '<div class="summary-row"><span>Frete</span><span>'+shippingLabel+'</span></div>'+
-      (inCheckout?upsellSection():'')+
+      (inCheckout && !activePayment?upsellSection():'')+
       '<div class="summary-divider"></div>'+
       '<div class="summary-row total"><span>'+(shippingValue===null?'Total dos produtos':'Total do pedido')+'</span><strong>'+money(total)+'</strong></div>'+
       (!inCheckout?'<a data-route="/checkout" href="/checkout" class="btn btn-green">PROSSEGUIR PARA O PAGAMENTO</a>':'')+
