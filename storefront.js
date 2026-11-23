@@ -21,6 +21,8 @@
   let checkoutStage = 1;
   let details = {};
   let toastTimer;
+  let checkoutOfferIds = null;
+  const selectedUpsells = new Map();
 
   function readCart() {
     try {
@@ -82,11 +84,11 @@
   function image(p,alt) {
     return '<img src="'+p.img+'" alt="'+(alt||p.name)+'" loading="lazy" decoding="async" />';
   }
-  function selectSize(p,cls) {
+  function selectSize(p,cls,chosenSize=null,locked=false) {
     return '<label class="sr-only" for="size-'+cls+'-'+p.id+'">Tamanho do '+p.name+'</label>'+
-      '<select id="size-'+cls+'-'+p.id+'" class="size-select" data-size-for="'+p.id+'">'+
-      '<option value="">Tamanho: selecione</option>'+
-      sizes.map(n=>'<option value="'+n+'">'+n+'</option>').join("")+'</select>';
+      '<select id="size-'+cls+'-'+p.id+'" class="size-select" data-size-for="'+p.id+'"'+(locked?' disabled':'')+'>'+
+      '<option value=""'+(chosenSize==null?' selected':'')+'>Tamanho: selecione</option>'+
+      sizes.map(n=>'<option value="'+n+'"'+(Number(chosenSize)===n?' selected':'')+'>'+n+'</option>').join("")+'</select>';
   }
   function productCard(p) {
     return '<article class="product-card">'+
@@ -124,21 +126,36 @@
       '<div class="item-prices"><del>'+money(p.old*item.qty)+'</del><strong>'+money(PRICE*item.qty)+'</strong></div></div></div></article>';
   }
   function recommends() {
-    const inCart=new Set(cart.map(i=>i.id));
-    return products.filter(p=>!inCart.has(p.id)).slice(0,2);
+    // Mantém as duas sugestões fixas durante o checkout, inclusive depois de adicionadas.
+    if (checkoutOfferIds===null) {
+      const alreadyInCart=new Set(cart.map(i=>i.id));
+      checkoutOfferIds=products.filter(p=>!alreadyInCart.has(p.id)).slice(0,2).map(p=>p.id);
+    }
+    return checkoutOfferIds.map(id=>byId[id]).filter(Boolean);
+  }
+  function upsellChosenSize(id) {
+    const size=selectedUpsells.get(id);
+    if (!size)return null;
+    return cart.some(item=>item.id===id && item.size===size)?size:null;
   }
   function upsellCard(p) {
-    return '<div class="upsell-card upsell-inline"><div class="upsell-image">'+image(p)+'</div>'+
-      '<div class="upsell-body"><label class="upsell-label"><input type="checkbox" data-upsell-check="'+p.id+'" aria-label="Adicionar '+p.name+'"/>'+
-      '<span><strong>Adicionar '+p.name+'</strong><em>Por '+money(PRICE)+' neste pedido</em></span></label>'+
-      '<div class="upsell-controls">'+selectSize(p,"upsell")+'</div></div></div>';
+    const chosen=upsellChosenSize(p.id);
+    return '<div class="upsell-card upsell-inline'+(chosen?' is-added':'')+'">'+
+      '<div class="upsell-image">'+image(p)+'</div>'+
+      '<div class="upsell-body">'+
+      '<div class="upsell-label"><strong>'+p.name+'</strong><span class="upsell-price">+'+money(PRICE)+'</span></div>'+
+      '<p class="upsell-desc">Adicione este anel ao seu pedido.</p>'+
+      '<div class="upsell-controls">'+selectSize(p,"upsell",chosen,Boolean(chosen))+'</div>'+
+      '<label class="upsell-toggle"><input type="checkbox" data-upsell-check="'+p.id+'"'+(chosen?' checked':'')+'>'+
+      '<span>'+(chosen?'Adicionado ao pedido (desmarque para remover)':'Adicionar ao meu pedido')+'</span></label>'+
+      '</div></div>';
   }
   function upsellSection() {
     const picks=recommends();
-    if(!picks.length)return "";
-    return '<div class="upsell"><h3>COMPLETE SEU PEDIDO</h3>'+
-      '<p>Ofertas opcionais de outros anéis da coleção, por '+money(PRICE)+' cada.</p>'+
-      picks.map(upsellCard).join("")+'</div>';
+    if(!picks.length)return '';
+    return '<section class="upsell" aria-label="Ofertas adicionais"><h3>COMPLETE SEU PEDIDO</h3>'+
+      '<p>Escolha um tamanho e marque a oferta desejada. O valor é somado somente quando você adiciona.</p>'+
+      picks.map(upsellCard).join("")+'</section>';
   }
   function summary(inCheckout=false) {
     const value=subtotal(), missing=Math.max(0,Math.round((299-value)*100)/100);
@@ -270,18 +287,35 @@
   });
   document.addEventListener("change",ev=>{
     const input=ev.target.closest("[data-upsell-check]");
-    if(!input || !input.checked)return;
-    const selected=input.closest(".upsell-card")?.querySelector("select[data-size-for]");
-    if(!selected?.value){
-      input.checked=false;
-      toast("Escolha o tamanho do anel antes de adicioná-lo.");
-      selected?.focus();
+    if(!input)return;
+    const id=input.dataset.upsellCheck;
+    if(input.checked){
+      const selected=input.closest(".upsell-card")?.querySelector("select[data-size-for]");
+      if(!selected?.value){
+        input.checked=false;
+        toast("Selecione primeiro o tamanho do anel.");
+        selected?.focus();
+        return;
+      }
+      if(addItem(id,selected.value)){
+        selectedUpsells.set(id,Number(selected.value));
+        render();
+        toast("Oferta adicionada. O total foi atualizado.");
+      } else input.checked=false;
       return;
     }
-    if(addItem(input.dataset.upsellCheck,selected.value)){
-      render();
-      toast("Anel adicional incluído na sacola.");
-    } else input.checked=false;
+    const size=selectedUpsells.get(id);
+    if(size){
+      const item=cart.find(i=>i.id===id&&i.size===size);
+      if(item){
+        if(item.qty>1)item.qty-=1;
+        else cart=cart.filter(i=>i!==item);
+        saveCart();
+      }
+    }
+    selectedUpsells.delete(id);
+    render();
+    toast("Oferta removida. O total foi atualizado.");
   });
   document.addEventListener("submit",ev=>{
     const form=ev.target;
