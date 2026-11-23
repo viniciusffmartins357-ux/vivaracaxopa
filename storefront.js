@@ -256,9 +256,11 @@
     let content;
     if(activePayment){
       const img=/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(activePayment.qrCodeBase64||"")?activePayment.qrCodeBase64:"";
-      content='<div class="pix-result"><h3>'+ (activePayment.status==="approved"?"Pagamento confirmado!":"Pague com Pix") +'</h3>'+
+      const terminated=["failed","refunded","chargeback"].includes(activePayment.status);
+      content='<div class="pix-result"><h3>'+ (activePayment.status==="approved"?"Pagamento confirmado!":terminated?"Cobrança encerrada":"Pague com Pix") +'</h3>'+
         '<p>Total da cobrança: <strong>'+money(activePayment.amountCents/100)+'</strong></p>'+
         (activePayment.status==="approved"?'<p class="pix-approved">Pagamento aprovado e confirmado pela PinguPag.</p>':
+        terminated?'<p>Esta cobrança não está mais ativa. Não utilize o código Pix anterior.</p>':
         (img?'<img class="pix-qr" src="'+img+'" alt="QR Code Pix do pedido" width="230" height="230"/>':'')+
         '<label for="pix-copy-value">Pix Copia e Cola</label><textarea id="pix-copy-value" rows="3" readonly></textarea>'+
         '<button type="button" id="pix-copy-button" class="btn btn-green">COPIAR CÓDIGO PIX</button>'+
