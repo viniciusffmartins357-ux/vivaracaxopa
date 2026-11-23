@@ -189,3 +189,44 @@ img{display:block;max-width:100%}
   .input-row{grid-template-columns:1fr;gap:0}
   .shipping-bar{font-size:.62rem}
 }
+
+/* Navegação da loja, visual das páginas de compra e escolha de frete */
+.header-link{background:transparent;border:0;padding:8px 0;color:var(--ink);display:inline-flex;align-items:center;cursor:pointer}
+.header-actions{justify-self:end;display:flex;align-items:center;gap:24px}
+.account-symbol{display:inline-flex;align-items:center;justify-content:center;color:var(--ink);opacity:.8}
+.menu-panel[hidden]{display:none}
+.menu-panel{position:absolute;top:100%;left:max(12px,calc((100vw - 1150px)/2));z-index:40;width:min(290px,calc(100vw - 24px));background:#fff;border:1px solid var(--line);box-shadow:0 15px 45px #122d201a;padding:10px}
+.menu-panel a{display:block;padding:13px 15px;color:var(--ink);font-size:.86rem;border-radius:3px}
+.menu-panel a:hover{background:#f6f5f1}
+.checkout-brandbar{background:var(--coral);color:var(--ink);min-height:51px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px max(20px,calc((100vw - 1120px)/2));border-bottom:1px solid #cf846b}
+.checkout-brand{font-family:Georgia,"Times New Roman",serif;font-size:19px;letter-spacing:.15em}
+.checkout-brand-signature{font-family:Georgia,serif;font-size:16px;font-style:italic}
+.catalog-container{max-width:990px}
+.short-page{max-width:1020px}
+.checkout-layout{grid-template-columns:minmax(0,1.68fr) minmax(280px,.83fr)}
+.product-card{border-radius:3px}
+.product-content{padding-bottom:15px}
+.btn-coral{letter-spacing:.12em}
+.form-card .delivery-preview{min-width:0;margin:15px 0;padding:15px;border:1px solid var(--line);background:#fff}
+.delivery-preview legend{font-family:Georgia,serif;font-size:.82rem;letter-spacing:.13em;font-weight:700;padding:0 7px}
+.form-card label.freight-choice{display:flex;flex-direction:row;align-items:center;gap:12px;background:#fff;border:1px solid #dfdfda;padding:13px 11px;margin:8px 0;cursor:pointer;color:var(--ink)}
+.form-card label.freight-choice:has(input:checked){border-color:#5b866d;background:#f6faf7}
+.form-card .freight-choice input[type=radio]{width:15px;min-width:15px;height:15px;min-height:15px;margin:0;accent-color:var(--green);flex:0 0 15px;padding:0}
+.freight-choice span{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.freight-choice strong{font-size:.83rem;line-height:1.35}
+.freight-choice small{font-size:.7rem;color:var(--muted);line-height:1.45}
+.freight-choice b{font-size:.75rem;font-weight:700;white-space:nowrap}
+.freight-disclaimer{font-size:.72rem;color:var(--muted);margin:12px 0 0;line-height:1.5}
+@media(max-width:900px){
+  .checkout-layout{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px){
+  .catalog-container{max-width:100%;padding:30px 12px 50px}
+  .checkout-brandbar{min-height:47px;padding:10px 15px}
+  .checkout-brand{font-size:15px}
+  .checkout-brand-signature{font-size:13px}
+  .header-actions{gap:17px}
+  .menu-panel{left:12px}
+  .short-page{max-width:100%}
+  .freight-choice b{font-size:.68rem}
+}
