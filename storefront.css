@@ -720,3 +720,96 @@ body{font-family:var(--font-ui);font-weight:400;letter-spacing:-.012em}
   .checkout-flow .upsell-inline .upsell-toggle{font-size:11px}
   .checkout-flow .safe-note{font-size:11px}
 }
+
+
+/* Checkout: visual inspirado nos elementos de compra encontrados no ZIP.
+   O arquivo não possui rota de checkout: adaptamos somente cores, cartões e botões. */
+.checkout-flow.checkout-from-zip{
+  width:min(100%,1024px);
+  max-width:1024px;
+  padding:30px 20px 72px;
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:#17372b;
+}
+.checkout-from-zip .page-heading{padding:0 0 17px;margin-bottom:20px;border-bottom:1px solid #e7e5e3}
+.checkout-from-zip .page-heading h1{
+  font:600 24px/1.35 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  letter-spacing:.04em;color:#22523b;margin:0 0 4px
+}
+.checkout-from-zip .page-heading span{font-size:12px;color:#667870}
+.checkout-from-zip .checkout-layout{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(260px,.88fr);align-items:start;gap:20px}
+.checkout-from-zip .checkout-main{display:flex;flex-direction:column;gap:16px}
+.checkout-from-zip .checkout-products{padding:0;display:flex;flex-direction:column;gap:10px;background:transparent;border:0;border-radius:0}
+.checkout-from-zip .checkout-product,.checkout-from-zip .checkout-product + .checkout-product{
+  display:grid;grid-template-columns:78px minmax(0,1fr) auto;gap:15px;
+  align-items:center;min-height:98px;padding:12px 16px;
+  border:1px solid #e5e7eb;border-radius:7px;background:#fff
+}
+.checkout-from-zip .checkout-product img{width:76px;height:76px;object-fit:contain;border-radius:6px}
+.checkout-from-zip .checkout-product strong{
+  color:#315a6e;font:500 13px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:0;
+}
+.checkout-from-zip .checkout-product small{display:block;margin-top:6px;color:#748077;font-size:12px}
+.checkout-from-zip .checkout-product b{color:#168b4f;font-size:15px;white-space:nowrap;font-weight:700}
+.checkout-from-zip .form-card,.checkout-from-zip .summary{
+  padding:21px 22px;background:#fff;border:1px solid #e5e7eb;border-radius:7px;box-shadow:none;
+}
+.checkout-from-zip .form-card h2{font:600 15px/1.45 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.035em;margin:0 0 18px}
+.checkout-from-zip .form-card label:not(.freight-choice){
+  font:500 12px/1.4 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:#375343;gap:6px;margin-bottom:13px;
+}
+.checkout-from-zip .form-card input:not([type="radio"]),.checkout-from-zip .form-card select{
+  min-height:42px;padding:10px 12px;border:1px solid #d5dbe0;border-radius:6px;
+  background:#fff;font:400 13px/1.4 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:#1c3c2f
+}
+.checkout-from-zip .form-card input:not([type="radio"]):focus,.checkout-from-zip .form-card select:focus{
+  border-color:#38865b;outline:2px solid #d3e8da;outline-offset:0
+}
+.checkout-from-zip .checkout-availability{
+  background:#f7f8f6;border-left:2px solid #869c86;border-radius:2px;
+  padding:9px 11px;margin:0 0 16px;color:#617168;font-size:11px;line-height:1.5
+}
+.checkout-from-zip .form-card .btn-green,.checkout-from-zip .summary .btn-green{
+  background:#e89575;color:#fff;border:0;border-radius:3px;
+  font:700 12px/1.35 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  letter-spacing:.08em;min-height:45px;margin-top:10px;padding:12px;
+}
+.checkout-from-zip .form-card .btn-green:disabled{background:#d5d5d2;color:#5b655c}
+.checkout-from-zip .summary{position:static;top:auto;padding:19px}
+.checkout-from-zip .summary h3{font:600 14px/1.5 system-ui,-apple-system,"Segoe UI",Arial,sans-serif;letter-spacing:.08em;margin-bottom:15px;color:#24553d}
+.checkout-from-zip .summary-row,.checkout-from-zip .summary-row strong{font-size:12px}
+.checkout-from-zip .summary-row{padding:8px 0}
+.checkout-from-zip .summary-row.total{padding-top:13px;font-size:13px}
+.checkout-from-zip .summary-row.total strong{color:#148d52;font-size:15px}
+.checkout-from-zip .upsell{margin-top:13px;padding-top:14px;border-top:1px solid #e5e7eb}
+.checkout-from-zip .upsell>h3{display:block;font-size:13px;color:#24553d;margin:0 0 6px}
+.checkout-from-zip .upsell>p{display:block;font-size:11px;color:#67786d;margin:0 0 10px}
+.checkout-from-zip .upsell-inline{
+  grid-template-columns:62px minmax(0,1fr);
+  border:1px solid #e7e7e3;border-radius:5px;background:#fff;
+  padding:10px;gap:9px;margin:0 0 10px
+}
+.checkout-from-zip .upsell-inline .upsell-image{width:60px;padding:0}
+.checkout-from-zip .upsell-inline .upsell-image img{width:60px;height:60px;object-fit:contain}
+.checkout-from-zip .upsell-inline .upsell-label strong{font-size:11px;font-weight:600;line-height:1.4;color:#315a6e}
+.checkout-from-zip .upsell-inline .upsell-label .upsell-price{font-size:12px;color:#168b4f}
+.checkout-from-zip .upsell-inline .upsell-desc{font-size:10px;line-height:1.4}
+.checkout-from-zip .upsell-inline .size-select{min-height:32px;height:32px;padding:6px 7px;font-size:11px}
+.checkout-from-zip .upsell-inline .upsell-toggle{font-size:11px;line-height:1.4}
+.checkout-from-zip .safe-note{font-size:11px;line-height:1.5;margin-top:13px}
+.checkout-from-zip .back-link{font-size:12px;margin:2px 0 0}
+@media(max-width:760px){
+ .checkout-flow.checkout-from-zip{padding:20px 12px 52px;max-width:590px}
+ .checkout-from-zip .page-heading h1{font-size:21px}
+ .checkout-from-zip .checkout-layout{grid-template-columns:minmax(0,1fr);gap:15px}
+ .checkout-from-zip .checkout-product,.checkout-from-zip .checkout-product + .checkout-product{
+   grid-template-columns:60px minmax(0,1fr) auto;gap:9px;padding:10px;min-height:76px
+ }
+ .checkout-from-zip .checkout-product img{width:58px;height:58px}
+ .checkout-from-zip .checkout-product strong{font-size:11px}
+ .checkout-from-zip .checkout-product small{font-size:10px}
+ .checkout-from-zip .checkout-product b{font-size:12px}
+ .checkout-from-zip .form-card,.checkout-from-zip .summary{padding:16px 14px}
+ .checkout-from-zip .upsell-inline{grid-template-columns:65px minmax(0,1fr);gap:10px}
+}
