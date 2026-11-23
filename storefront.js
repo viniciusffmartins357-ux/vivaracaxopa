@@ -79,7 +79,8 @@
       '<a href="/carrinho" data-route="/carrinho">Minha sacola ('+quantity()+')</a></nav></header>';
   }
   function footer() {
-    return '<footer class="site-footer"><strong>COLEÇÃO LIFE</strong><p>Vitrine independente • Compra online com pagamento a configurar</p><a data-route="/" href="/">Voltar à coleção</a></footer>';
+    return '<footer class="site-footer"><strong>COLEÇÃO LIFE</strong><p>Vitrine independente • Compra online com pagamento a configurar</p>'+
+      '<a data-route="/" href="/">Voltar à coleção</a> · <a data-route="/rastreio" href="/rastreio">Acompanhar pedido</a></footer>';
   }
   function image(p,alt) {
     return '<img src="'+p.img+'" alt="'+(alt||p.name)+'" loading="lazy" decoding="async" />';
@@ -225,6 +226,8 @@
       '<p>As etapas anteriores foram concluídas apenas na prévia. Nenhum pedido é registrado e nenhum pagamento pode ser efetuado aqui.</p>'+
       '<p>Para ativar compras reais é necessária uma integração com provedor de pagamentos e cotação real de frete.</p></div>'+
       '<button type="button" class="btn btn-green" disabled>AGUARDANDO PAGAMENTO SEGURO</button>'+
+      '<p class="tracking-prompt">Depois de uma confirmação de pagamento real, o pedido poderá ser acompanhado. O código da transportadora aparecerá somente após a postagem.</p>'+
+      '<a href="/rastreio" data-route="/rastreio" class="tracking-link">Conhecer a tela de acompanhamento</a>'+
       '<button type="button" class="text-button" data-prev>Voltar ao endereço</button></section>';
   }
   function checkoutPage() {
@@ -236,12 +239,31 @@
       customerStage()+addressStage()+paymentStage()+
       '<a href="/carrinho" data-route="/carrinho" class="back-link">Voltar à sacola</a></div>'+summary(true)+'</div></main>'+footer();
   }
+  function trackingPage() {
+    return '<header class="tracking-topbar"><a href="/" data-route="/">← Voltar à loja</a><strong>ACOMPANHAMENTO DO PEDIDO</strong><span></span></header>'+
+      '<main class="tracking-container">'+
+      '<div class="tracking-heading"><span class="eyebrow">INFORMAÇÕES DO PEDIDO</span><h1>Acompanhe sua entrega</h1>'+
+      '<p>O pagamento confirmado e a postagem são etapas diferentes. O código de rastreio só fica disponível quando uma transportadora atribui um código real ao envio.</p></div>'+
+      '<section class="tracking-progress" aria-label="Etapas do pedido">'+
+      '<div><span class="tracking-number">1</span><strong>Pagamento confirmado</strong><p>Confirmado pelo provedor de pagamentos, nunca apenas pelo navegador.</p></div>'+
+      '<div><span class="tracking-number">2</span><strong>Pedido preparado</strong><p>O vendedor separa os produtos e providencia a postagem.</p></div>'+
+      '<div><span class="tracking-number">3</span><strong>Rastreamento disponível</strong><p>O código verdadeiro da transportadora é liberado quando existir.</p></div></section>'+
+      '<section class="tracking-lookup"><h2>Consultar acompanhamento</h2>'+
+      '<p>Para consultar um pedido, utilize a referência privada fornecida pela loja. Não informe CPF, telefone ou dados bancários.</p>'+
+      '<form id="tracking-form" autocomplete="off"><label for="tracking-token">Referência privada do pedido</label>'+
+      '<div class="tracking-form-row"><input id="tracking-token" name="token" type="text" maxlength="128" minlength="12" required autocapitalize="off" spellcheck="false" placeholder="Sua referência de acompanhamento"/>'+
+      '<button class="btn btn-green" type="submit">CONSULTAR</button></div></form>'+
+      '<div id="tracking-result" class="tracking-result" role="status" aria-live="polite">A consulta será ativada quando o sistema de pedidos e o serviço de envio estiverem integrados. Nenhum código fictício será gerado.</div>'+
+      '</section>'+
+      '<p class="tracking-disclaimer">Esta página não confirma pagamentos por conta própria e não representa um serviço oficial de transportadora.</p>'+
+      '</main>'+footer();
+  }
   function render() {
     const path=route();
     const p=path.startsWith("/produto/")?byId[path.split("/")[2]]:null;
-    let content=path==="/carrinho"?cartPage():path==="/checkout"?checkoutPage():p?productPage(p):catalogue();
+    let content=path==="/rastreio"?trackingPage():path==="/carrinho"?cartPage():path==="/checkout"?checkoutPage():p?productPage(p):catalogue();
     root.innerHTML=content+'<div role="status" class="toast" aria-live="polite"></div>';
-    document.title=(path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Coleção Life";
+    document.title=(path==="/rastreio"?"Acompanhar pedido":path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Coleção Life";
   }
   document.addEventListener("click",ev=>{
     const menuBtn=ev.target.closest("#menu-toggle");
@@ -314,6 +336,40 @@
     selectedUpsells.delete(id);
     render();
     toast("Oferta removida. O total foi atualizado.");
+  });
+  document.addEventListener("submit",async ev=>{
+    const form=ev.target;
+    if(form.id!=="tracking-form")return;
+    ev.preventDefault();
+    const token=String(new FormData(form).get("token")||"").trim();
+    const result=document.getElementById("tracking-result");
+    if(!result)return;
+    if(!/^[a-zA-Z0-9_-]{12,128}$/.test(token)){
+      result.textContent="Use uma referência válida, sem espaços ou informações pessoais.";
+      return;
+    }
+    result.textContent="Consultando o acompanhamento…";
+    try {
+      const response=await fetch("/api/rastreio?token="+encodeURIComponent(token),{
+        method:"GET",cache:"no-store",headers:{"Accept":"application/json"},credentials:"same-origin"
+      });
+      const data=await response.json();
+      if(!response.ok || !data || data.ok!==true){
+        result.textContent="A consulta de pedidos ainda não está conectada ao sistema de pagamentos e entregas.";
+        return;
+      }
+      if(data.paymentStatus!=="approved"){
+        result.textContent="O pagamento ainda não foi confirmado pelo provedor.";
+        return;
+      }
+      if(data.shippingStatus==="shipped" && typeof data.trackingCode==="string" && data.trackingCode){
+        result.textContent="Pagamento confirmado. Código de rastreio: "+data.trackingCode;
+      }else{
+        result.textContent="Pagamento confirmado. Pedido em preparação: o código de rastreio será exibido após a postagem real.";
+      }
+    }catch{
+      result.textContent="Não foi possível consultar o acompanhamento no momento.";
+    }
   });
   document.addEventListener("submit",ev=>{
     const form=ev.target;
