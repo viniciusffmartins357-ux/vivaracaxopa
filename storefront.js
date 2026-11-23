@@ -92,7 +92,7 @@
     return '<article class="product-card">'+
       '<a href="/produto/'+p.id+'" data-route="/produto/'+p.id+'" class="product-image">'+image(p)+'</a>'+
       '<div class="product-content"><a href="/produto/'+p.id+'" data-route="/produto/'+p.id+'" class="product-name">'+p.name+'</a>'+
-      '<div class="price-area"><strong>'+money(PRICE)+'</strong></div>'+
+      '<div class="price-area"><span class="old-price" aria-label="Preço de referência">'+money(p.old)+'</span><strong>'+money(PRICE)+'</strong></div>'+
       '<div class="product-picker">'+selectSize(p,"catalog")+
       '<button type="button" class="btn btn-coral" data-add="'+p.id+'">ADICIONAR À SACOLA</button></div></div></article>';
   }
@@ -106,7 +106,7 @@
     return header()+'<main class="page-container"><a data-route="/" href="/" class="back-link">‹ Voltar à coleção</a>'+
       '<div class="product-detail"><div class="detail-photo">'+image(p)+'</div>'+
       '<section class="detail-info"><span class="eyebrow">COLEÇÃO DE ANÉIS</span><h1>'+p.name+'</h1>'+
-      '<div class="price-area"><strong>'+money(PRICE)+'</strong></div>'+
+      '<div class="price-area"><span class="old-price" aria-label="Preço de referência">'+money(p.old)+'</span><strong>'+money(PRICE)+'</strong></div>'+
       '<p class="detail-copy">Escolha o tamanho ideal para adicionar à sua sacola. Confira os detalhes do material e da entrega antes de finalizar a compra.</p>'+
       '<label class="field-title">Tamanho</label><div class="detail-picker">'+selectSize(p,"detail")+
       '<button type="button" class="btn btn-coral" data-add="'+p.id+'">ADICIONAR À SACOLA</button></div>'+
