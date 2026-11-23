@@ -194,7 +194,7 @@
     if(checkoutStage>1)return completedCard(1,"DADOS DO CLIENTE","Etapa preenchida · dados não enviados.");
     return '<form id="customer-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">1</span> DADOS DO CLIENTE</h2>'+
-      '<p class="checkout-availability" role="status"><strong>Checkout em configuração.</strong> O Pix ainda não está disponível. Use somente dados fictícios nesta prévia.</p>'+
+      '<p class="checkout-availability" role="status">Prévia do checkout · Pix indisponível. Não informe dados reais.</p>'+
       '<label>Nome completo<input name="fullName" type="text" autocomplete="off" required minlength="3" maxlength="100" placeholder="Nome e sobrenome"/></label>'+
       '<label>CPF<input name="cpf" type="text" inputmode="numeric" autocomplete="off" required minlength="14" maxlength="14" pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
       '<small id="cpf-info" class="sr-only">CPF apenas para testar a máscara. Não use um CPF real.</small>'+
@@ -236,9 +236,9 @@
   function checkoutPage() {
     if(!cart.length)return cartPage();
     return header()+'<main class="page-container short-page checkout-flow"><div class="page-heading"><h1>CHECKOUT</h1><span>'+quantity()+' itens na sacola</span></div>'+
-      steps()+'<div class="checkout-layout"><div class="checkout-main">'+
-      '<div class="checkout-products">'+cart.map(i=>'<div class="checkout-product">'+image(byId[i.id])+
-        '<div><strong>'+byId[i.id].name+'</strong><small>Tamanho: '+i.size+' · Quantidade: '+i.qty+'</small></div><b>'+money(i.qty*PRICE)+'</b></div>').join("")+'</div>'+
+      '<div class="checkout-layout"><div class="checkout-main">'+
+      '<div class="checkout-products">'+cart.map(i=>'<article class="checkout-product">'+image(byId[i.id])+
+        '<div><strong>'+byId[i.id].name+'</strong><small>Tamanho: '+i.size+' · Qtd: '+i.qty+'</small></div><b>'+money(i.qty*PRICE)+'</b></article>').join("")+'</div>'+
       customerStage()+addressStage()+paymentStage()+
       '<a href="/carrinho" data-route="/carrinho" class="back-link">Voltar à sacola</a></div>'+summary(true)+'</div></main>'+footer();
   }
