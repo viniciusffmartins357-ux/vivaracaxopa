@@ -59,13 +59,22 @@
     return true;
   }
   const bagIcon = '<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-1 13H5L4 8Z"/><path d="M9 10V6a3 3 0 0 1 6 0v4"/></svg>';
+  const userIcon='<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 21v-1.5a7 7 0 0 1 14 0V21"/></svg>';
+  const menuIcon='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
   function header() {
+    if(route()==="/carrinho" || route()==="/checkout"){
+      return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">ATELIÊ ANÉIS</a>'+
+        '<a href="/" data-route="/" class="checkout-brand-signature">coleção de anéis</a></header>';
+    }
     return '<div class="shipping-bar">FRETE GRÁTIS EM COMPRAS A PARTIR DE R$ 299</div>'+
       '<header class="site-header"><div class="header-content">'+
-      '<a class="header-link" data-route="/" href="/" aria-label="Ver coleção">☰ <span class="hide-mobile">Coleção</span></a>'+
+      '<button type="button" id="menu-toggle" class="header-link" aria-label="Abrir menu da loja" aria-controls="menu-panel" aria-expanded="false">'+menuIcon+'</button>'+
       '<a data-route="/" href="/" class="logo" aria-label="Ir para a loja"><span>Ateliê</span><small>ANÉIS</small></a>'+
-      '<a data-route="/carrinho" href="/carrinho" class="bag-link" aria-label="Ver minha sacola">'+bagIcon+
-      '<span class="bag-count">'+quantity()+'</span></a></div></header>';
+      '<div class="header-actions"><span class="account-symbol" title="Área de conta ainda não disponível">'+userIcon+'</span>'+
+      '<a data-route="/carrinho" href="/carrinho" class="bag-link" aria-label="Abrir minha sacola">'+bagIcon+
+      '<span class="bag-count">'+quantity()+'</span></a></div></div>'+
+      '<nav id="menu-panel" class="menu-panel" hidden><a href="/" data-route="/">Ver coleção</a>'+
+      '<a href="/carrinho" data-route="/carrinho">Minha sacola ('+quantity()+')</a></nav></header>';
   }
   function footer() {
     return '<footer class="site-footer"><strong>ATELIÊ ANÉIS</strong><p>Vitrine independente • Compra online com pagamento a configurar</p><a data-route="/" href="/">Voltar à coleção</a></footer>';
@@ -174,9 +183,11 @@
       '<label>Cidade<input name="city" required maxlength="80" placeholder="Cidade"/></label></div>'+
       '<label>Estado<select name="state" required><option value="">Selecionar</option>'+
       ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"].map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>'+
-      '<div class="delivery-preview"><strong>OPÇÕES DE ENTREGA</strong>'+
-      '<p>'+(subtotal()>=299?'Frete grátis por condição da loja.':'Cotação de frete pendente de integração com transportadora.')+'</p>'+
-      '<small>Prazo e custo exatos precisam ser obtidos de um serviço de frete real.</small></div>'+
+      '<fieldset class="delivery-preview"><legend>OPÇÕES DE FRETE</legend>'+
+      (subtotal()>=299?'<label class="freight-choice"><input type="radio" name="freight" value="free" required checked><span><strong>Frete grátis</strong><small>Disponível para pedidos a partir de R$ 299. Prazo a confirmar.</small></span><b>Grátis</b></label>':'')+
+      '<label class="freight-choice"><input type="radio" name="freight" value="standard" required><span><strong>Entrega padrão</strong><small>Custo e prazo dependem de cotação real.</small></span><b>A calcular</b></label>'+
+      '<label class="freight-choice"><input type="radio" name="freight" value="express" required><span><strong>Entrega expressa</strong><small>Disponibilidade e prazo a confirmar.</small></span><b>A calcular</b></label>'+
+      '<p class="freight-disclaimer">Estas opções demonstram o fluxo; não representam cotações nem serviços contratados.</p></fieldset>'+
       '<button type="submit" class="btn btn-green">CONTINUAR</button>'+
       '<button type="button" class="text-button" data-prev>Voltar aos dados</button></form>';
   }
@@ -205,6 +216,12 @@
     document.title=(path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Ateliê Anéis";
   }
   document.addEventListener("click",ev=>{
+    const menuBtn=ev.target.closest("#menu-toggle");
+    if(menuBtn){
+      const panel=document.getElementById("menu-panel");
+      if(panel){panel.hidden=!panel.hidden;menuBtn.setAttribute("aria-expanded",String(!panel.hidden));}
+      return;
+    }
     const a=ev.target.closest("a[data-route]");
     if(a && ev.button===0 && !ev.ctrlKey && !ev.metaKey && !ev.altKey && !ev.shiftKey){
       ev.preventDefault();
