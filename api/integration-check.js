@@ -1,25 +1,17 @@
-import { db,dbConfigured,gatewayConfigured,merchantConfigured,shippingRates,reply } from "../lib/life-payments.js";
-
-// Diagnóstico somente de configurações e acesso ao banco.
-// Não chama a PinguPag, não mostra credenciais e nunca gera cobranças.
-export default async function handler(req,res) {
+import {gatewayConfigured,merchantConfigured,shippingRates,reply} from "../lib/life-payments.js";
+// Diagnóstico sem consultar credenciais nem gerar Pix.
+export default function handler(req,res){
   if(req.method!=="GET")return reply(res,405,{error:"method_not_allowed"});
-  let dbStatus="not_configured";
-  if(dbConfigured()){
-    try{
-      await db("GET","?select=id&limit=1");
-      dbStatus="connected";
-    }catch{dbStatus="connection_failed";}
-  }
-  const rates=shippingRates();
+  const shipping=shippingRates();
   return reply(res,200,{
-    database:dbStatus,
+    database:"not_required",
     paymentCredentialsConfigured:gatewayConfigured(),
     sellerIdentityConfigured:merchantConfigured(),
     storeUrlConfigured:Boolean(process.env.PUBLIC_STORE_URL),
-    shippingConfigured:rates.standard!==null || rates.express!==null,
+    shippingConfigured:shipping.standard!==null||shipping.express!==null,
     livePaymentsEnabled:process.env.PIX_LIVE_ENABLED==="true",
     gatewayConnectionVerified:false,
-    note:"O diagnóstico não chama a PinguPag e não gera Pix. Valide o domínio da API e teste o provedor antes de habilitar cobranças."
+    trackingMode:"order_payment_reference",
+    note:"O código acompanha o status de pagamento na PinguPag; não é rastreio da transportadora."
   });
 }
