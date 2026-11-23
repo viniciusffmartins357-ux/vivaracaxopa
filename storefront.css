@@ -845,3 +845,35 @@ body{font-family:var(--font-ui);font-weight:400;letter-spacing:-.012em}
   .checkout-brandbar .checkout-signature-logo .checkout-signature-script{font-size:31px}
   .checkout-brandbar .checkout-signature-logo .checkout-signature-sub{font-size:6px}
 }
+
+
+/* Pagamento Pix Life Anéis - QR Code e confirmação */
+.checkout-from-zip .pix-result{display:flex;flex-direction:column;gap:11px;align-items:stretch}
+.checkout-from-zip .pix-result h3{
+  font:500 22px/1.3 "Bodoni Moda",Georgia,serif;
+  color:#123d2b;margin:0
+}
+.checkout-from-zip .pix-result p{font-size:13px;line-height:1.6;color:#3b5749;margin:0}
+.checkout-from-zip .pix-result .pix-qr{
+  display:block;width:min(230px,100%);height:auto;aspect-ratio:1/1;
+  object-fit:contain;align-self:center;border:1px solid #e5e8e3;
+  background:#fff;padding:9px;border-radius:5px
+}
+.checkout-from-zip .pix-result label{font-size:12px;font-weight:600;color:#244332}
+.checkout-from-zip .pix-result textarea{
+  display:block;resize:none;width:100%;min-height:76px;
+  border:1px solid #cdd5ce;background:#f7f8f5;
+  padding:10px;border-radius:4px;font:12px/1.45 monospace;
+  color:#233f30;overflow-wrap:anywhere
+}
+.checkout-from-zip .pix-result #pix-copy-button{width:100%;background:#e89575;color:#fff}
+.checkout-from-zip .pix-approved{
+  border:1px solid #91bd9b;background:#f1faf3;color:#0b7240!important;
+  padding:13px;border-radius:4px
+}
+.checkout-from-zip .tracking-secret{
+  display:block;font:11px/1.6 monospace;word-break:break-all;
+  padding:10px;border-radius:4px;border:1px solid #d6ded7;background:#fafcf9
+}
+.checkout-from-zip #pix-error{color:#b83f37;font-size:12px;line-height:1.5;margin:8px 0}
+.checkout-from-zip .payment-stage .btn[disabled]{cursor:not-allowed;opacity:.65}
