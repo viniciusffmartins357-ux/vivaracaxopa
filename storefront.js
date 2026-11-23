@@ -20,6 +20,9 @@
   let cart = readCart();
   let checkoutStage = 1;
   let details = {};
+  let activePayment = null;
+  let paymentCheckTimer = null;
+  let checkoutConfig = {enabled:false,merchantName:"Life Anéis",legalName:"",shippingCents:{standard:null,express:null}};
   let toastTimer;
   let checkoutOfferIds = null;
   const selectedUpsells = new Map();
@@ -191,10 +194,11 @@
       '<p>'+description+'</p></section>';
   }
   function customerStage() {
-    if(checkoutStage>1)return completedCard(1,"DADOS DO CLIENTE","Etapa preenchida · dados não enviados.");
+    if(checkoutStage>1)return completedCard(1,"DADOS DO CLIENTE","Dados preenchidos · você pode editar antes do pagamento.");
     return '<form id="customer-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">1</span> DADOS DO CLIENTE</h2>'+
-      '<p class="checkout-availability" role="status">Prévia do checkout · Pix indisponível. Não informe dados reais.</p>'+
+      (checkoutConfig.enabled?'<p class="checkout-availability">Pagamento seguro via Pix · '+escapeHtml(checkoutConfig.legalName)+'.</p>':
+       '<p class="checkout-availability" role="status">Prévia do checkout · Pix indisponível. Não informe dados reais.</p>')+
       '<label>Nome completo<input name="fullName" type="text" autocomplete="off" required minlength="3" maxlength="100" placeholder="Nome e sobrenome"/></label>'+
       '<label>CPF<input name="cpf" type="text" inputmode="numeric" autocomplete="off" required minlength="14" maxlength="14" pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
       '<small id="cpf-info" class="sr-only">CPF apenas para testar a máscara. Não use um CPF real.</small>'+
@@ -204,10 +208,19 @@
   }
   function addressStage() {
     if(checkoutStage<2)return "";
-    if(checkoutStage>2)return completedCard(2,"ENDEREÇO E FRETE","Endereço preenchido nesta prévia. Frete sujeito a cotação.");
+    if(checkoutStage>2)return completedCard(2,"ENDEREÇO E FRETE","Endereço e entrega selecionados · você pode editar.");
+    const rates=checkoutConfig.shippingCents||{};
+    const cost=id=>typeof rates[id]==="number" && Number.isInteger(rates[id]) && rates[id]>0?rates[id]:null;
+    const delivery=(id,name,description)=>{
+      const c=cost(id);
+      if(checkoutConfig.enabled && c===null)return "";
+      return '<label class="freight-choice"><input type="radio" name="freight" value="'+id+'" required>'+
+        '<span><strong>'+name+'</strong><small>'+description+'</small></span><b>'+(c===null?'A calcular':money(c/100))+'</b></label>';
+    };
+    const free=(subtotal()*100>=29900);
     return '<form id="address-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">2</span> ENDEREÇO E FRETE</h2>'+
-      '<p class="shipping-intro">Informe o endereço para visualizar as opções de entrega.</p>'+
+      '<p class="shipping-intro">'+(checkoutConfig.enabled?'Confira o endereço e selecione uma das opções de entrega.':'Informe o endereço para visualizar as opções de entrega.')+'</p>'+
       '<div class="input-row postcode-row"><label>CEP<input name="zip" required inputmode="numeric" pattern="[0-9]{5}-?[0-9]{3}" placeholder="00000-000"/></label>'+
       '<label>Número<input name="number" required maxlength="12" placeholder="Nº"/></label></div>'+
       '<label>Rua<input name="street" required maxlength="150" placeholder="Endereço"/></label>'+
@@ -216,22 +229,45 @@
       '<label>Estado<select name="state" required><option value="">Selecione</option>'+
       ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"].map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>'+
       '<fieldset class="delivery-preview"><legend>OPÇÕES DE FRETE</legend>'+
-      (subtotal()>=299?'<label class="freight-choice"><input type="radio" name="freight" value="free" required checked><span><strong>Frete grátis</strong><small>Faixa promocional; prazo a confirmar.</small></span><b>Grátis</b></label>':'')+
-      '<label class="freight-choice"><input type="radio" name="freight" value="standard" required><span><strong>Entrega padrão</strong><small>Valor e prazo a consultar.</small></span><b>A calcular</b></label>'+
-      '<label class="freight-choice"><input type="radio" name="freight" value="express" required><span><strong>Entrega expressa</strong><small>Disponibilidade, preço e prazo a consultar.</small></span><b>A calcular</b></label>'+
-      '<p class="freight-disclaimer">Prazo e valor são confirmados pela transportadora antes do pagamento.</p></fieldset>'+
+      (free?'<label class="freight-choice"><input type="radio" name="freight" value="free" required checked><span><strong>Frete grátis</strong><small>Compra a partir de R$ 299,00</small></span><b>Grátis</b></label>':'')+
+      delivery("standard","Entrega padrão","Prazo informado no envio")+
+      delivery("express","Entrega expressa","Sujeito à disponibilidade")+
+      (checkoutConfig.enabled && !free && cost("standard")===null && cost("express")===null?'<p>Entrega não configurada para este pedido. Não é possível gerar o Pix.</p>':'')+
+      '<p class="freight-disclaimer">A entrega deve ter valor e prazo confirmados pela loja antes da cobrança.</p></fieldset>'+
       '<button type="submit" class="btn btn-green">CONTINUAR</button>'+
       '<button type="button" class="text-button" data-prev>Voltar aos dados</button></form>';
   }
+  function escapeHtml(value) {
+    return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
   function paymentStage() {
     if(checkoutStage<3)return "";
+    let content;
+    if(activePayment){
+      const img=/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(activePayment.qrCodeBase64||"")?activePayment.qrCodeBase64:"";
+      content='<div class="pix-result"><h3>'+ (activePayment.status==="approved"?"Pagamento confirmado!":"Pague com Pix") +'</h3>'+
+        '<p>Total da cobrança: <strong>'+money(activePayment.amountCents/100)+'</strong></p>'+
+        (activePayment.status==="approved"?'<p class="pix-approved">Pagamento aprovado e confirmado pela PinguPag.</p>':
+        (img?'<img class="pix-qr" src="'+img+'" alt="QR Code Pix do pedido" width="230" height="230"/>':'')+
+        '<label for="pix-copy-value">Pix Copia e Cola</label><textarea id="pix-copy-value" rows="3" readonly></textarea>'+
+        '<button type="button" id="pix-copy-button" class="btn btn-green">COPIAR CÓDIGO PIX</button>'+
+        '<p id="pix-status" role="status">Aguardando confirmação do pagamento…</p>')+
+        '<p class="tracking-prompt">Código de acompanhamento (guarde para consultar seu pedido):</p>'+
+        '<code class="tracking-secret">'+escapeHtml(activePayment.accessToken)+'</code>'+
+        '</div>';
+    }else if(checkoutConfig.enabled){
+      content='<div class="payment-info"><strong>Pagamento via Pix</strong>'+
+        '<p>Beneficiário cadastrado: '+escapeHtml(checkoutConfig.legalName)+'. O valor inclui os anéis e o frete selecionado.</p></div>'+
+        '<button type="button" id="pix-generate-button" class="btn btn-green">GERAR QR CODE PIX</button>'+
+        '<p id="pix-error" role="alert"></p>';
+    }else{
+      content='<div class="payment-info"><strong>Pix indisponível no momento</strong>'+
+        '<p>Estamos finalizando a conexão da loja com o sistema de pagamentos. Nenhuma cobrança será gerada nesta prévia.</p></div>'+
+        '<button type="button" class="btn btn-green" disabled>GERAR PIX — INDISPONÍVEL</button>';
+    }
     return '<section class="form-card payment-stage"><h2><span class="step-dot">3</span> PAGAMENTO</h2>'+
-      '<div class="payment-info"><strong>Pix indisponível no momento</strong>'+
-      '<p>A emissão do QR Code e a confirmação dos pedidos ainda não estão habilitadas. Nenhum pagamento é gerado nesta página.</p></div>'+
-      '<button type="button" class="btn btn-green" disabled>GERAR PIX — INDISPONÍVEL</button>'+
-      '<p class="tracking-prompt">Depois de uma confirmação de pagamento real, o pedido poderá ser acompanhado. O código da transportadora aparecerá somente após a postagem.</p>'+
-      '<a href="/rastreio" data-route="/rastreio" class="tracking-link">Conhecer a tela de acompanhamento</a>'+
-      '<button type="button" class="text-button" data-prev>Voltar ao endereço</button></section>';
+      content+'<a href="/rastreio" data-route="/rastreio" class="tracking-link">Acompanhar pedido</a>'+
+      (!activePayment?'<button type="button" class="text-button" data-prev>Voltar ao endereço</button>':'')+'</section>';
   }
   function checkoutPage() {
     if(!cart.length)return cartPage();
