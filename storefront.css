@@ -813,3 +813,35 @@ body{font-family:var(--font-ui);font-weight:400;letter-spacing:-.012em}
  .checkout-from-zip .form-card,.checkout-from-zip .summary{padding:16px 14px}
  .checkout-from-zip .upsell-inline{grid-template-columns:65px minmax(0,1fr);gap:10px}
 }
+
+
+/* Marca Life Anéis no canto superior direito do checkout: texto, sem imagem. */
+.checkout-brandbar .checkout-signature-logo{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  color:#183b2a;
+  font-style:normal;
+  text-decoration:none;
+  white-space:nowrap;
+  min-width:67px;
+}
+.checkout-brandbar .checkout-signature-logo .checkout-signature-script{
+  display:block;
+  font:400 34px/.75 "Italianno","Brush Script MT",cursive;
+  letter-spacing:0;
+  text-transform:none;
+}
+.checkout-brandbar .checkout-signature-logo .checkout-signature-sub{
+  display:block;
+  font:500 7px/1.15 "Montserrat",Arial,sans-serif;
+  letter-spacing:.35em;
+  text-indent:.35em;
+  text-transform:uppercase;
+}
+@media(max-width:600px){
+  .checkout-brandbar .checkout-signature-logo .checkout-signature-script{font-size:31px}
+  .checkout-brandbar .checkout-signature-logo .checkout-signature-sub{font-size:6px}
+}
