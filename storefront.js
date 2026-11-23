@@ -264,7 +264,24 @@
       if(item){item.qty=Math.max(1,Math.min(15,item.qty+Number(qty.dataset.delta)));saveCart();render();}
       return;
     }
+    const edit=ev.target.closest("[data-edit-stage]");
+    if(edit){checkoutStage=Number(edit.dataset.editStage);render();return;}
     if(ev.target.closest("[data-prev]")){checkoutStage=Math.max(1,checkoutStage-1);render();return;}
+  });
+  document.addEventListener("change",ev=>{
+    const input=ev.target.closest("[data-upsell-check]");
+    if(!input || !input.checked)return;
+    const selected=input.closest(".upsell-card")?.querySelector("select[data-size-for]");
+    if(!selected?.value){
+      input.checked=false;
+      toast("Escolha o tamanho do anel antes de adicioná-lo.");
+      selected?.focus();
+      return;
+    }
+    if(addItem(input.dataset.upsellCheck,selected.value)){
+      render();
+      toast("Anel adicional incluído na sacola.");
+    } else input.checked=false;
   });
   document.addEventListener("submit",ev=>{
     const form=ev.target;
@@ -275,12 +292,13 @@
       const d=new FormData(form);
       const ph=String(d.get("phone")||"").replace(/\D/g,"");
       if(ph.length<10||ph.length>11){toast("Digite um telefone válido com DDD.");return;}
-      details={name:d.get("fullName"),email:d.get("email")};
+      details={customerCompleted:true};
       checkoutStage=2;
     }else{
       checkoutStage=3;
     }
-    window.scrollTo({top:0,behavior:"instant"});render();
+    render();
+    document.querySelector(checkoutStage===2?"#address-form":".payment-stage")?.scrollIntoView({block:"start",behavior:"smooth"});
   });
   window.addEventListener("popstate",render);
   render();
