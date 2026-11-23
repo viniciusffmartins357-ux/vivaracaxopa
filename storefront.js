@@ -374,7 +374,7 @@
   document.addEventListener("input",ev=>{
     const cpf=ev.target.closest('input[name="cpf"]');
     if(!cpf)return;
-    const digits=cpf.value.replace(/\\D/g,"").slice(0,11);
+    const digits=cpf.value.replace(/\D/g,"").slice(0,11);
     const a=digits.slice(0,3),b=digits.slice(3,6),c=digits.slice(6,9),d=digits.slice(9);
     cpf.value=a+(digits.length>3?"."+b:"")+(digits.length>6?"."+c:"")+(digits.length>9?"-"+d:"");
   });
