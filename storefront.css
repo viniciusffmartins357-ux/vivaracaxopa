@@ -230,3 +230,49 @@ img{display:block;max-width:100%}
   .short-page{max-width:100%}
   .freight-choice b{font-size:.68rem}
 }
+
+
+/* Ajustes visuais baseados nas capturas da coleção Life */
+:root{--ivory:#fffdfa;--paper:#fff;--coral:#e99575;--coral-dark:#dc8567;--ink:#12392a;--green:#092b1b;--line:#e4e2dc;--green-price:#148847}
+body{background:#fffdfa}
+.shipping-bar{background:#e99575;color:#fff;min-height:34px;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.055em;padding:8px 15px;font-weight:700}
+.site-header{background:#fffdfa}
+.header-content{max-width:1150px;min-height:69px;padding:0 24px}
+.logo{gap:2px}
+.logo span{font:italic 32px/1 Georgia,"Times New Roman",serif;letter-spacing:-.055em;color:#092b1b}
+.logo small{font:500 8px/1.3 Arial,Helvetica,sans-serif;letter-spacing:.34em;color:#385248}
+.header-actions{gap:19px}
+.menu-panel{background:#fffdfa}
+.catalog-container{max-width:1110px;padding-top:35px}
+.catalog-heading{margin:0 auto 34px}
+.catalog-heading h1{font:400 32px/1.1 Georgia,"Times New Roman",serif;letter-spacing:.03em;color:#0b3527;margin:5px 0 9px}
+.catalog-heading p{font-size:12px;color:#e99575}
+.product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.product-card{border:1px solid #e4e2dc;background:#fff;border-radius:2px}
+.product-card:hover{transform:none;box-shadow:0 2px 15px #183c2512}
+.product-image{padding:15px;background:#fff}
+.product-content{padding:9px 14px 17px}
+.product-name{font:400 14px/1.35 Georgia,serif;color:#16362c;min-height:44px}
+.price-area strong{font-size:18px}
+.btn-coral{background:#e99575}
+.btn-green{background:#082918}
+.checkout-brandbar{background:#e99575;min-height:48px;padding:9px max(20px,calc((100vw - 1110px)/2))}
+.checkout-brand{font:400 20px/1 Georgia,serif;letter-spacing:.16em}
+.checkout-brand-signature{font:italic 17px Georgia,serif}
+.short-page{max-width:1010px}
+.checkout-layout{grid-template-columns:minmax(0,1.7fr) minmax(240px,.82fr);gap:19px}
+.page-heading{margin-bottom:20px}
+.page-heading h1{font:400 22px/1.2 Georgia,serif;letter-spacing:.16em}
+.form-card h2,.summary h3{font-family:Georgia,serif;letter-spacing:.12em}
+@media (max-width:900px){.checkout-layout{grid-template-columns:1fr}}
+@media (max-width:700px){
+ .catalog-container{padding:26px 12px 55px}
+ .catalog-heading h1{font-size:27px}
+ .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ .product-content{padding:6px 11px 14px}
+ .product-image{padding:8px}
+ .product-name{min-height:56px;font-size:13px}
+ .header-content{min-height:62px;padding:0 18px}
+ .logo span{font-size:29px}
+}
+@media (max-width:360px){.product-grid{grid-template-columns:1fr}.product-name{min-height:0}}
