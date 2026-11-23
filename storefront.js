@@ -100,10 +100,9 @@
       '<button type="button" class="btn btn-coral" data-add="'+p.id+'">ADICIONAR À SACOLA</button></div></div></article>';
   }
   function catalogue() {
-    return header()+'<main class="catalog-container"><div class="catalog-heading catalog-logo-heading">'+
-      '<h1 class="sr-only">ANÉIS LIFE</h1>'+
-      '<img class="catalog-brand-image" src="/logo-aneis-life.svg" alt="Life Vivara — Anéis Life, 8 produtos" width="450" height="246" fetchpriority="high" decoding="async" />'+
-      '</div><div class="product-grid">'+products.map(productCard).join("")+'</div></main>'+footer();
+    return header()+'<main class="catalog-container"><div class="catalog-heading">'+
+      '<h1>ANÉIS LIFE</h1><p>8 produtos</p></div>'+
+      '<div class="product-grid">'+products.map(productCard).join("")+'</div></main>'+footer();
   }
   function productPage(p) {
     const related=products.filter(x=>x.id!==p.id).slice(0,3);
