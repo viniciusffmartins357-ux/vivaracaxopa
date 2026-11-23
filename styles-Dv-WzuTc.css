@@ -4,3 +4,6 @@
 /* Normaliza visualmente fundos acinzentados nas fotos dos produtos, preservando os arquivos originais. */
 img[src*="ring-2-B16VW5nY.jpg"]{filter:brightness(1.195)}
 img[src*="ring-8-C18XpEOy.jpg"]{filter:brightness(1.11)}
+
+/* Fundo branco uniforme para imagens ampliadas com fundo acinzentado. */
+img[src*="ring-2-B16VW5nY-4k.svg"],img[src*="ring-8-C18XpEOy-4k.svg"]{filter:brightness(1.055) contrast(1.28);image-rendering:auto}
