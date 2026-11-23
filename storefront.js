@@ -192,8 +192,8 @@
       '<h2><span class="step-dot">1</span> DADOS DO CLIENTE</h2>'+
       '<p class="form-notice">Simulação de checkout: não envie dados reais. Nenhuma informação é transmitida ao vendedor.</p>'+
       '<label>Nome completo<input name="fullName" type="text" autocomplete="off" required minlength="3" maxlength="100" placeholder="Nome e sobrenome"/></label>'+
-      '<label>CPF (somente na integração real)<input name="cpf" type="text" disabled placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
-      '<small id="cpf-info" class="field-help">CPF desativado nesta demonstração para proteger seus dados.</small>'+
+      '<label>CPF (simulação)<input name="cpf" type="text" inputmode="numeric" autocomplete="off" required minlength="14" maxlength="14" pattern="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}-[0-9]{2}" placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
+      '<small id="cpf-info" class="field-help">Use apenas dados fictícios. O CPF digitado não será transmitido nem armazenado.</small>'+
       '<label>Telefone com DDD<input name="phone" type="tel" autocomplete="off" inputmode="tel" required minlength="10" maxlength="20" placeholder="(00) 00000-0000"/></label>'+
       '<label>E-mail<input name="email" type="email" autocomplete="off" required maxlength="120" placeholder="seu@email.com"/></label>'+
       '<button class="btn btn-green" type="submit">CONTINUAR</button></form>';
@@ -371,14 +371,20 @@
       result.textContent="Não foi possível consultar o acompanhamento no momento.";
     }
   });
+  document.addEventListener("input",ev=>{
+    const cpf=ev.target.closest('input[name="cpf"]');
+    if(!cpf)return;
+    const digits=cpf.value.replace(/\\D/g,"").slice(0,11);
+    const a=digits.slice(0,3),b=digits.slice(3,6),c=digits.slice(6,9),d=digits.slice(9);
+    cpf.value=a+(digits.length>3?"."+b:"")+(digits.length>6?"."+c:"")+(digits.length>9?"-"+d:"");
+  });
   document.addEventListener("submit",ev=>{
     const form=ev.target;
     if(form.id!=="customer-form"&&form.id!=="address-form")return;
     ev.preventDefault();
     if(!form.reportValidity())return;
     if(form.id==="customer-form"){
-      const d=new FormData(form);
-      const ph=String(d.get("phone")||"").replace(/\D/g,"");
+      const ph=String(form.elements.phone?.value||"").replace(/\D/g,"");
       if(ph.length<10||ph.length>11){toast("Digite um telefone válido com DDD.");return;}
       details={customerCompleted:true};
       checkoutStage=2;
