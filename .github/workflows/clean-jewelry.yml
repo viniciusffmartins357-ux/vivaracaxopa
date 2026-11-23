@@ -1,0 +1,32 @@
+name: Limpar fundo dos aneis
+on:
+  push:
+    paths:
+      - 'tools/clean_jewelry_backgrounds.py'
+      - '.github/workflows/clean-jewelry.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Dependencias de imagem
+        run: python -m pip install --quiet pillow numpy
+      - name: Gerar imagens com fundo branco
+        run: python tools/clean_jewelry_backgrounds.py
+      - name: Publicar imagens na main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ring-*-white-v2.svg index.html index-BAtkO90p.js
+          if ! git diff --staged --quiet; then
+            git commit -m "Remove fundo cinza das oito fotos de aneis"
+            git push origin HEAD:main
+          fi
