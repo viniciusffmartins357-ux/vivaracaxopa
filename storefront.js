@@ -105,7 +105,7 @@
   }
   function catalogue() {
     return header()+'<main class="catalog-container"><div class="catalog-heading">'+
-      '<h1>ANÉIS LIFE</h1><p>8 produtos</p></div>'+
+      '<h1>LIFE ANÉIS</h1><p>8 produtos</p></div>'+
       '<div class="product-grid">'+products.map(productCard).join("")+'</div></main>'+footer();
   }
   function productPage(p) {
