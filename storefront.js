@@ -159,53 +159,64 @@
       '<a data-route="/" href="/" class="back-link">Continuar comprando</a></section>'+summary()+'</div>')+'</main>'+footer();
   }
   function steps() {
-    return '<div class="steps"><span class="'+(checkoutStage===1?'current':'')+'">1. Dados</span>'+
-      '<span class="'+(checkoutStage===2?'current':'')+'">2. Endereço</span>'+
-      '<span class="'+(checkoutStage===3?'current':'')+'">3. Pagamento</span></div>';
+    return '<div class="checkout-status"><span class="'+(checkoutStage>=1?'current':'')+'">1. Dados do cliente</span>'+
+      '<span class="'+(checkoutStage>=2?'current':'')+'">2. Endereço e frete</span>'+
+      '<span class="'+(checkoutStage>=3?'current':'')+'">3. Pagamento</span></div>';
+  }
+  function completedCard(step,title,description){
+    return '<section class="form-card completed-stage"><h2><span class="step-dot">'+step+'</span> '+title+
+      '<button type="button" class="edit-step" data-edit-stage="'+step+'">Editar</button></h2>'+
+      '<p>'+description+'</p></section>';
   }
   function customerStage() {
+    if(checkoutStage>1)return completedCard(1,"DADOS DO CLIENTE","Dados preenchidos nesta demonstração. Você pode editar antes de continuar.");
     return '<form id="customer-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">1</span> DADOS DO CLIENTE</h2>'+
-      '<p class="form-notice">Demonstração: estes dados não são enviados nem armazenados.</p>'+
-      '<label>Nome completo<input name="fullName" type="text" autocomplete="off" required minlength="3" maxlength="100" placeholder="Seu nome"/></label>'+
-      '<label>E-mail<input name="email" type="email" autocomplete="off" required maxlength="120" placeholder="voce@exemplo.com"/></label>'+
+      '<p class="form-notice">Simulação de checkout: não envie dados reais. Nenhuma informação é transmitida ao vendedor.</p>'+
+      '<label>Nome completo<input name="fullName" type="text" autocomplete="off" required minlength="3" maxlength="100" placeholder="Nome e sobrenome"/></label>'+
+      '<label>CPF (somente na integração real)<input name="cpf" type="text" disabled placeholder="000.000.000-00" aria-describedby="cpf-info"/></label>'+
+      '<small id="cpf-info" class="field-help">CPF desativado nesta demonstração para proteger seus dados.</small>'+
       '<label>Telefone com DDD<input name="phone" type="tel" autocomplete="off" inputmode="tel" required minlength="10" maxlength="20" placeholder="(00) 00000-0000"/></label>'+
+      '<label>E-mail<input name="email" type="email" autocomplete="off" required maxlength="120" placeholder="seu@email.com"/></label>'+
       '<button class="btn btn-green" type="submit">CONTINUAR</button></form>';
   }
   function addressStage() {
+    if(checkoutStage<2)return "";
+    if(checkoutStage>2)return completedCard(2,"ENDEREÇO E FRETE","Endereço de demonstração informado. Prazo e valor do frete ainda precisam de cotação.");
     return '<form id="address-form" class="form-card" autocomplete="off">'+
       '<h2><span class="step-dot">2</span> ENDEREÇO E FRETE</h2>'+
-      '<p class="form-notice">Prévia do checkout. Ainda não há consulta de CEP nem cotação de transportadora.</p>'+
-      '<div class="input-row"><label>CEP<input name="zip" required inputmode="numeric" pattern="[0-9]{5}-?[0-9]{3}" placeholder="00000-000"/></label>'+
+      '<p class="form-notice">Simulação visual do frete. Os valores e prazos abaixo não são cotações reais.</p>'+
+      '<div class="input-row postcode-row"><label>CEP<input name="zip" required inputmode="numeric" pattern="[0-9]{5}-?[0-9]{3}" placeholder="00000-000"/></label>'+
       '<label>Número<input name="number" required maxlength="12" placeholder="Nº"/></label></div>'+
       '<label>Rua<input name="street" required maxlength="150" placeholder="Endereço"/></label>'+
       '<div class="input-row"><label>Bairro<input name="district" required maxlength="80" placeholder="Bairro"/></label>'+
       '<label>Cidade<input name="city" required maxlength="80" placeholder="Cidade"/></label></div>'+
-      '<label>Estado<select name="state" required><option value="">Selecionar</option>'+
+      '<label>Estado<select name="state" required><option value="">Selecione</option>'+
       ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"].map(x=>'<option value="'+x+'">'+x+'</option>').join("")+'</select></label>'+
       '<fieldset class="delivery-preview"><legend>OPÇÕES DE FRETE</legend>'+
-      (subtotal()>=299?'<label class="freight-choice"><input type="radio" name="freight" value="free" required checked><span><strong>Frete grátis</strong><small>Disponível para pedidos a partir de R$ 299. Prazo a confirmar.</small></span><b>Grátis</b></label>':'')+
-      '<label class="freight-choice"><input type="radio" name="freight" value="standard" required><span><strong>Entrega padrão</strong><small>Custo e prazo dependem de cotação real.</small></span><b>A calcular</b></label>'+
-      '<label class="freight-choice"><input type="radio" name="freight" value="express" required><span><strong>Entrega expressa</strong><small>Disponibilidade e prazo a confirmar.</small></span><b>A calcular</b></label>'+
-      '<p class="freight-disclaimer">Estas opções demonstram o fluxo; não representam cotações nem serviços contratados.</p></fieldset>'+
+      (subtotal()>=299?'<label class="freight-choice"><input type="radio" name="freight" value="free" required checked><span><strong>Frete grátis</strong><small>Faixa promocional; prazo a confirmar.</small></span><b>Grátis</b></label>':'')+
+      '<label class="freight-choice"><input type="radio" name="freight" value="standard" required><span><strong>Entrega padrão</strong><small>Valor e prazo a consultar.</small></span><b>A calcular</b></label>'+
+      '<label class="freight-choice"><input type="radio" name="freight" value="express" required><span><strong>Entrega expressa</strong><small>Disponibilidade, preço e prazo a consultar.</small></span><b>A calcular</b></label>'+
+      '<p class="freight-disclaimer">Nenhuma transportadora foi consultada. O frete não será cobrado neste protótipo.</p></fieldset>'+
       '<button type="submit" class="btn btn-green">CONTINUAR</button>'+
       '<button type="button" class="text-button" data-prev>Voltar aos dados</button></form>';
   }
   function paymentStage() {
+    if(checkoutStage<3)return "";
     return '<section class="form-card payment-stage"><h2><span class="step-dot">3</span> PAGAMENTO</h2>'+
-      '<div class="payment-info"><strong>Pedido preparado — pagamento ainda não habilitado</strong>'+
-      '<p>Para aceitar pedidos de verdade, é necessário integrar um checkout hospedado por um provedor de pagamentos, com valores calculados no servidor e frete confirmado.</p>'+
-      '<p>Não digite dados de cartão ou CPF nesta demonstração.</p></div>'+
-      '<button type="button" class="btn btn-green" disabled>AGUARDANDO INTEGRAÇÃO DE PAGAMENTO</button>'+
+      '<div class="payment-info"><strong>Checkout demonstrativo</strong>'+
+      '<p>As etapas anteriores foram concluídas apenas na prévia. Nenhum pedido é registrado e nenhum pagamento pode ser efetuado aqui.</p>'+
+      '<p>Para ativar compras reais é necessária uma integração com provedor de pagamentos e cotação real de frete.</p></div>'+
+      '<button type="button" class="btn btn-green" disabled>AGUARDANDO PAGAMENTO SEGURO</button>'+
       '<button type="button" class="text-button" data-prev>Voltar ao endereço</button></section>';
   }
   function checkoutPage() {
     if(!cart.length)return cartPage();
-    return header()+'<main class="page-container short-page"><div class="page-heading"><h1>CHECKOUT</h1><span>'+quantity()+' itens na sacola</span></div>'+
+    return header()+'<main class="page-container short-page checkout-flow"><div class="page-heading"><h1>CHECKOUT</h1><span>'+quantity()+' itens na sacola</span></div>'+
       steps()+'<div class="checkout-layout"><div class="checkout-main">'+
       '<div class="checkout-products">'+cart.map(i=>'<div class="checkout-product">'+image(byId[i.id])+
-        '<div><strong>'+byId[i.id].name+'</strong><small>Tamanho '+i.size+' · Quantidade '+i.qty+'</small></div><b>'+money(i.qty*PRICE)+'</b></div>').join("")+'</div>'+
-      (checkoutStage===1?customerStage():checkoutStage===2?addressStage():paymentStage())+
+        '<div><strong>'+byId[i.id].name+'</strong><small>Tamanho: '+i.size+' · Quantidade: '+i.qty+'</small></div><b>'+money(i.qty*PRICE)+'</b></div>').join("")+'</div>'+
+      customerStage()+addressStage()+paymentStage()+
       '<a href="/carrinho" data-route="/carrinho" class="back-link">Voltar à sacola</a></div>'+summary(true)+'</div></main>'+footer();
   }
   function render() {
