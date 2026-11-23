@@ -166,15 +166,26 @@
       picks.map(upsellCard).join("")+'</section>';
   }
   function summary(inCheckout=false) {
-    const value=subtotal(), missing=Math.max(0,Math.round((299-value)*100)/100);
+    const value=subtotal();
+    const rates=checkoutConfig.shippingCents||{};
+    const selected=details.shippingMethod;
+    const configured=selected==="free" && value>=299 ? 0 :
+      (["standard","express"].includes(selected) && Number.isInteger(rates[selected])?rates[selected]:null);
+    const shippingValue=activePayment?activePayment.amountCents-Math.round(value*100):configured;
+    const shippingLabel=shippingValue===null
+      ? (value>=299?"Grátis disponível":inCheckout?"Selecione o frete":"Calculado no checkout")
+      : shippingValue===0?"Grátis":money(shippingValue/100);
+    const total=activePayment?activePayment.amountCents/100:value+(shippingValue===null?0:shippingValue/100);
     return '<aside class="summary"><h3>RESUMO DO PEDIDO</h3>'+
       '<div class="summary-row"><span>Subtotal ('+quantity()+' '+(quantity()===1?'item':'itens')+')</span><strong>'+money(value)+'</strong></div>'+
-      '<div class="summary-row"><span>Frete</span><span>'+(value>=299?'Grátis — sujeito à confirmação':inCheckout?'Selecione o frete':'Calculado no checkout')+'</span></div>'+
+      '<div class="summary-row"><span>Frete</span><span>'+shippingLabel+'</span></div>'+
       (inCheckout?upsellSection():'')+
       '<div class="summary-divider"></div>'+
-      '<div class="summary-row total"><span>Total dos produtos</span><strong>'+money(value)+'</strong></div>'+
+      '<div class="summary-row total"><span>'+(shippingValue===null?'Total dos produtos':'Total do pedido')+'</span><strong>'+money(total)+'</strong></div>'+
       (!inCheckout?'<a data-route="/checkout" href="/checkout" class="btn btn-green">PROSSEGUIR PARA O PAGAMENTO</a>':'')+
-      '<div class="safe-note">'+(inCheckout?'Valor exibido sem frete. Pix ainda não disponível.':'Frete e pagamento serão confirmados nas próximas etapas.')+'</div></aside>';
+      '<div class="safe-note">'+(inCheckout?
+        (checkoutConfig.enabled?'Confira o valor total antes de gerar o Pix.':'Pix indisponível até concluir a configuração segura.'):
+        'Frete e pagamento serão confirmados nas próximas etapas.')+'</div></aside>';
   }
   function cartPage() {
     return header()+'<main class="page-container short-page checkout-flow"><div class="page-heading"><h1>MINHA SACOLA</h1>'+
