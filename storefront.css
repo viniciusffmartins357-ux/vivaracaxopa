@@ -405,3 +405,35 @@ body{background:#fffdfa}
   .checkout-flow .upsell-inline .upsell-label{flex-wrap:wrap;gap:4px}
   .checkout-flow .upsell-inline .upsell-label .upsell-price{font-size:12px}
 }
+
+
+/* Tipografia editorial baseada na referência enviada pelo cliente.
+   Serif de alto contraste nos títulos e produtos; sans moderna nos controles. */
+:root{--font-editorial:"Bodoni Moda","Times New Roman",serif;--font-ui:"Montserrat",Arial,Helvetica,sans-serif;--font-script:"Italianno","Brush Script MT",cursive;font-family:var(--font-ui)}
+body{font-family:var(--font-ui);font-weight:400;letter-spacing:-.012em}
+.catalog-heading h1{font-family:var(--font-editorial);font-size:40px;font-weight:400;line-height:1.16;letter-spacing:.016em;text-transform:uppercase}
+.product-name{font-family:var(--font-editorial);font-size:14px;font-weight:400;line-height:1.5;letter-spacing:-.02em}
+.checkout-flow .cart-item-title,.checkout-flow .checkout-product strong,.cart-item-title{font-family:var(--font-editorial);font-weight:400;letter-spacing:-.015em;line-height:1.5}
+.detail-info h1,.related-section h2,.empty-cart h2{font-family:var(--font-editorial);font-weight:400;letter-spacing:-.025em}
+.page-heading h1,.checkout-flow .page-heading h1{font-family:var(--font-editorial);font-size:27px;font-weight:400;letter-spacing:.11em;line-height:1.25}
+.summary h3,.checkout-flow .summary h3,.upsell h3,.checkout-flow .upsell h3,.form-card h2,.checkout-flow .form-card h2{font-family:var(--font-editorial);font-size:16px;font-weight:500;letter-spacing:.13em;line-height:1.35}
+.checkout-flow .form-card .delivery-preview legend,.site-footer strong{font-family:var(--font-editorial)}
+.checkout-brand,.checkout-brandbar .checkout-brand{font-family:var(--font-editorial);font-weight:500;letter-spacing:.14em}
+.checkout-brand-signature,.logo span{font-family:var(--font-script);font-weight:400;font-style:normal;letter-spacing:0}
+.logo span{font-size:43px;line-height:.86}
+.checkout-brand-signature{font-size:26px;line-height:1}
+.price-area strong,.checkout-flow .item-prices strong,.checkout-flow .summary-row.total strong{font-family:var(--font-ui);font-weight:700;letter-spacing:-.02em}
+.old-price,.catalog-heading p,.checkout-flow .page-heading span,.shipping-bar,.btn,.btn-coral,.btn-green,.btn-outline,.size-select,.form-card label,.form-card input,.form-card select,.checkout-flow .form-card input,.checkout-flow .form-card select,.summary-row,.safe-note,.detail-copy,.muted,.upsell-desc,.checkout-flow .upsell-inline .upsell-label strong,.checkout-flow .upsell-inline .upsell-price,.checkout-flow .upsell-inline .upsell-toggle{font-family:var(--font-ui)}
+.shipping-bar{font-size:10px;font-weight:600;letter-spacing:.08em}
+.btn,.btn-coral,.btn-green{font-size:10px;font-weight:700;letter-spacing:.12em}
+.size-select{font-size:11px;font-weight:500;letter-spacing:0}
+.old-price{font-size:11px}
+.product-content .price-area strong{font-size:18px}
+.catalog-heading p{font-size:12px;letter-spacing:0}
+@media(max-width:700px){
+ .catalog-heading h1{font-size:34px}
+ .product-name{font-size:13px;line-height:1.45}
+ .logo span{font-size:38px}
+ .page-heading h1,.checkout-flow .page-heading h1{font-size:24px}
+ .checkout-flow .form-card h2,.checkout-flow .summary h3{font-size:15px}
+}
