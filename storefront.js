@@ -5,14 +5,14 @@
   const STORAGE = "aneis-life-cart-v3";
   const sizes = [14, 16, 18, 20, 22];
   const products = [
-    {id:"enigma-infinito-duplo",name:"Anel Infinito Duplo",old:610,img:"/ring-1-Cz3ws0ux-white-v2.svg"},
-    {id:"forms-coracao",name:"Anel Coração com Pedras",old:550,img:"/ring-2-B16VW5nY-white-v2.svg"},
-    {id:"cupido-coracao",name:"Anel Cupido Coração",old:450,img:"/ring-3-Qiw7MHPM-white-v2.svg"},
-    {id:"trancado",name:"Anel Trançado",old:399,img:"/ring-4-DdmGjkv3-white-v2.svg"},
-    {id:"astro-gota",name:"Anel Gota com Pedras",old:690,img:"/ring-5-DHVd5Ous-white-v2.svg"},
-    {id:"coracao",name:"Anel Coração Clássico",old:499,img:"/ring-6-BaUxRwUJ-white-v2.svg"},
-    {id:"love-iii-coracao",name:"Anel Coração Delicado",old:527,img:"/ring-7-BcHnBBxQ-white-v2.svg"},
-    {id:"coroa",name:"Anel Coroa",old:550,img:"/ring-8-C18XpEOy-white-v2.svg"}
+    {id:"enigma-infinito-duplo",name:"Anel Life Enigma Infinito Duplo em Prata 925",old:610,img:"/ring-1-Cz3ws0ux-white-v2.svg"},
+    {id:"forms-coracao",name:"Anel Life Forms Coração em Prata 925 com Pedras Incolores",old:550,img:"/ring-2-B16VW5nY-white-v2.svg"},
+    {id:"cupido-coracao",name:"Anel Life Cupido Coração em Prata 925",old:450,img:"/ring-3-Qiw7MHPM-white-v2.svg"},
+    {id:"trancado",name:"Anel Life Trançado em Prata 925",old:399,img:"/ring-4-DdmGjkv3-white-v2.svg"},
+    {id:"astro-gota",name:"Anel Life Astro Gota em Prata 925 com Pedras Incolores",old:690,img:"/ring-5-DHVd5Ous-white-v2.svg"},
+    {id:"coracao",name:"Anel Life Coração em Prata 925",old:499,img:"/ring-6-BaUxRwUJ-white-v2.svg"},
+    {id:"love-iii-coracao",name:"Anel Life Love III Coração em Prata 925",old:527,img:"/ring-7-BcHnBBxQ-white-v2.svg"},
+    {id:"coroa",name:"Anel Life Coroa em Prata 925",old:550,img:"/ring-8-C18XpEOy-white-v2.svg"}
   ];
   const byId = Object.fromEntries(products.map(p => [p.id,p]));
   const money = amount => new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(amount);
@@ -63,13 +63,13 @@
   const menuIcon='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>';
   function header() {
     if(route()==="/carrinho" || route()==="/checkout"){
-      return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">ATELIÊ ANÉIS</a>'+
-        '<a href="/" data-route="/" class="checkout-brand-signature">coleção de anéis</a></header>';
+      return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">VIVARA</a>'+
+        '<a href="/" data-route="/" class="checkout-brand-signature">Life</a></header>';
     }
     return '<div class="shipping-bar">FRETE GRÁTIS EM COMPRAS A PARTIR DE R$ 299</div>'+
       '<header class="site-header"><div class="header-content">'+
       '<button type="button" id="menu-toggle" class="header-link" aria-label="Abrir menu da loja" aria-controls="menu-panel" aria-expanded="false">'+menuIcon+'</button>'+
-      '<a data-route="/" href="/" class="logo" aria-label="Ir para a loja"><span>Ateliê</span><small>ANÉIS</small></a>'+
+      '<a data-route="/" href="/" class="logo" aria-label="Ir para a loja"><span>Life</span><small>VIVARA</small></a>'+
       '<div class="header-actions"><span class="account-symbol" title="Área de conta ainda não disponível">'+userIcon+'</span>'+
       '<a data-route="/carrinho" href="/carrinho" class="bag-link" aria-label="Abrir minha sacola">'+bagIcon+
       '<span class="bag-count">'+quantity()+'</span></a></div></div>'+
@@ -77,7 +77,7 @@
       '<a href="/carrinho" data-route="/carrinho">Minha sacola ('+quantity()+')</a></nav></header>';
   }
   function footer() {
-    return '<footer class="site-footer"><strong>ATELIÊ ANÉIS</strong><p>Vitrine independente • Compra online com pagamento a configurar</p><a data-route="/" href="/">Voltar à coleção</a></footer>';
+    return '<footer class="site-footer"><strong>COLEÇÃO LIFE</strong><p>Vitrine independente • Compra online com pagamento a configurar</p><a data-route="/" href="/">Voltar à coleção</a></footer>';
   }
   function image(p,alt) {
     return '<img src="'+p.img+'" alt="'+(alt||p.name)+'" loading="lazy" decoding="async" />';
@@ -97,8 +97,8 @@
       '<button type="button" class="btn btn-coral" data-add="'+p.id+'">ADICIONAR À SACOLA</button></div></div></article>';
   }
   function catalogue() {
-    return header()+'<main class="catalog-container"><div class="catalog-heading"><span class="eyebrow">COLEÇÃO</span>'+
-      '<h1>ANÉIS</h1><p>8 modelos para escolher seu favorito</p></div>'+
+    return header()+'<main class="catalog-container"><div class="catalog-heading">'+
+      '<h1>ANÉIS LIFE</h1><p>8 produtos</p></div>'+
       '<div class="product-grid">'+products.map(productCard).join("")+'</div></main>'+footer();
   }
   function productPage(p) {
@@ -213,7 +213,7 @@
     const p=path.startsWith("/produto/")?byId[path.split("/")[2]]:null;
     let content=path==="/carrinho"?cartPage():path==="/checkout"?checkoutPage():p?productPage(p):catalogue();
     root.innerHTML=content+'<div role="status" class="toast" aria-live="polite"></div>';
-    document.title=(path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Ateliê Anéis";
+    document.title=(path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Coleção Life";
   }
   document.addEventListener("click",ev=>{
     const menuBtn=ev.target.closest("#menu-toggle");
