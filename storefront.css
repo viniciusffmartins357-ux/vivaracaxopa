@@ -376,3 +376,32 @@ body{background:#fffdfa}
  .checkout-flow .checkout-product strong{font-size:12px}
  .checkout-flow .checkout-product b{font-size:11px}
 }
+
+
+/* Checkout: ofertas adicionais com seleção, confirmação e remoção visual */
+.checkout-flow .upsell{margin-top:15px;padding-top:15px;border-top:1px solid #e3e2db}
+.checkout-flow .upsell h3{margin:0 0 7px;font:400 14px/1.3 Georgia,serif;color:#123b2b;letter-spacing:.13em}
+.checkout-flow .upsell>p{margin:0 0 12px;font:11px/1.55 Arial,sans-serif;color:#6b7971}
+.checkout-flow .upsell-inline{display:grid;grid-template-columns:65px minmax(0,1fr);gap:9px;padding:12px 10px;margin-top:9px;border:1px solid #e3ded5;border-radius:3px;background:#fff;align-items:start;transition:border-color .15s,background .15s}
+.checkout-flow .upsell-inline.is-added{border-color:#6da484;background:#f4f9f5}
+.checkout-flow .upsell-inline .upsell-image{width:65px;align-self:start;padding-top:4px}
+.checkout-flow .upsell-inline .upsell-image img{width:65px;height:74px;object-fit:contain}
+.checkout-flow .upsell-inline .upsell-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.checkout-flow .upsell-inline .upsell-label{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin:0;cursor:default}
+.checkout-flow .upsell-inline .upsell-label strong{display:block;flex:1;min-width:0;font:500 12px/1.35 Arial,sans-serif;color:#173b2b}
+.checkout-flow .upsell-inline .upsell-label .upsell-price{color:#16854b;font:700 12px/1.2 Arial,sans-serif;white-space:nowrap}
+.checkout-flow .upsell-inline .upsell-desc{margin:0;color:#778179;font:11px/1.35 Arial,sans-serif}
+.checkout-flow .upsell-inline .upsell-controls{margin:5px 0 3px}
+.checkout-flow .upsell-inline .size-select{min-height:34px;max-width:100%;font:11px/1.3 Arial,sans-serif;padding:7px 9px;border-radius:3px}
+.checkout-flow .upsell-inline .size-select:disabled{background:#f2f5f2;color:#466250}
+.checkout-flow .upsell-inline .upsell-toggle{display:flex;flex-direction:row;align-items:flex-start;gap:7px;font:11px/1.4 Arial,sans-serif;color:#234a36;cursor:pointer;padding:5px 0 0;margin:0}
+.checkout-flow .upsell-inline .upsell-toggle input[type="checkbox"]{width:15px;min-width:15px;height:15px;min-height:15px;margin:0;padding:0;accent-color:#167742}
+.checkout-flow .upsell-inline.is-added .upsell-toggle{font-weight:700;color:#137942}
+.checkout-flow .upsell-inline .upsell-toggle span{flex:1;min-width:0}
+@media(max-width:600px){
+  .checkout-flow .upsell-inline{grid-template-columns:57px minmax(0,1fr);gap:8px;padding:10px 8px}
+  .checkout-flow .upsell-inline .upsell-image{width:57px}
+  .checkout-flow .upsell-inline .upsell-image img{width:57px;height:62px}
+  .checkout-flow .upsell-inline .upsell-label{flex-wrap:wrap;gap:4px}
+  .checkout-flow .upsell-inline .upsell-label .upsell-price{font-size:12px}
+}
