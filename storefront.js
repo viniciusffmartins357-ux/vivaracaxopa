@@ -69,13 +69,13 @@
         '<span class="checkout-brand-signature">Life Anéis</span></header>';
     }
     if(route()==="/carrinho"){
-      return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">VIVARA</a>'+
+      return '<header class="checkout-brandbar"><a href="/" data-route="/" class="checkout-brand">LIFE ANÉIS</a>'+
         '<a href="/" data-route="/" class="checkout-brand-signature">Life</a></header>';
     }
     return '<div class="shipping-bar">FRETE GRÁTIS EM COMPRAS A PARTIR DE R$ 299</div>'+
       '<header class="site-header"><div class="header-content">'+
       '<button type="button" id="menu-toggle" class="header-link" aria-label="Abrir menu da loja" aria-controls="menu-panel" aria-expanded="false">'+menuIcon+'</button>'+
-      '<a data-route="/" href="/" class="logo" aria-label="Ir para a loja"><span>Life</span><small>VIVARA</small></a>'+
+      '<a data-route="/" href="/" class="logo" aria-label="Ir para a loja"><span>Life</span><small>ANÉIS</small></a>'+
       '<div class="header-actions"><span class="account-symbol" title="Área de conta ainda não disponível">'+userIcon+'</span>'+
       '<a data-route="/carrinho" href="/carrinho" class="bag-link" aria-label="Abrir minha sacola">'+bagIcon+
       '<span class="bag-count">'+quantity()+'</span></a></div></div>'+
@@ -83,7 +83,7 @@
       '<a href="/carrinho" data-route="/carrinho">Minha sacola ('+quantity()+')</a></nav></header>';
   }
   function footer() {
-    return '<footer class="site-footer"><strong>COLEÇÃO LIFE</strong><p>Vitrine independente • Compra online com pagamento a configurar</p>'+
+    return '<footer class="site-footer"><strong>LIFE ANÉIS</strong><p>Vitrine independente • Compra online com pagamento a configurar</p>'+
       '<a data-route="/" href="/">Voltar à coleção</a> · <a data-route="/rastreio" href="/rastreio">Acompanhar pedido</a></footer>';
   }
   function image(p,alt) {
@@ -266,7 +266,7 @@
     const p=path.startsWith("/produto/")?byId[path.split("/")[2]]:null;
     let content=path==="/rastreio"?trackingPage():path==="/carrinho"?cartPage():path==="/checkout"?checkoutPage():p?productPage(p):catalogue();
     root.innerHTML=content+'<div role="status" class="toast" aria-live="polite"></div>';
-    document.title=(path==="/rastreio"?"Acompanhar pedido":path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Coleção Life";
+    document.title=(path==="/rastreio"?"Acompanhar pedido":path==="/carrinho"?"Minha sacola":path==="/checkout"?"Checkout":p?p.name:"Anéis e presentes")+" | Life Anéis";
   }
   document.addEventListener("click",ev=>{
     const menuBtn=ev.target.closest("#menu-toggle");
